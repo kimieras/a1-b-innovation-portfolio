@@ -1,0 +1,4287 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Innovation Portfolio · The Sport Commons 2026 → 2034</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap">
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+  <style>
+/* ============================================================
+   PORTFOLIO DASHBOARD — SPORT-CODED, BOLD, GEOMETRIC
+   Original aesthetic. No Decathlon brand assets.
+   ============================================================ */
+
+
+:root {
+  /* ---- Theme: Stadium (default dark, sport-coded) ---- */
+  --bg: #0E0F12;
+  --bg-2: #15171C;
+  --bg-3: #1C1F26;
+  --bg-4: #252934;
+  --line: #2A2E38;
+  --line-2: #3A3F4C;
+  --fg: #F4F5F7;
+  --fg-2: #B8BCC6;
+  --fg-3: #7A8092;
+  --fg-4: #4A4F5C;
+
+  /* Categorical play palette */
+  --p-compliance: oklch(85% 0.18 130);   /* acid lime */
+  --p-health:     oklch(72% 0.17 30);    /* coral */
+  --p-platform:   oklch(70% 0.16 245);   /* electric blue */
+  --p-habit:      oklch(68% 0.18 305);   /* violet */
+
+  --p-compliance-soft: color-mix(in oklch, var(--p-compliance) 18%, transparent);
+  --p-health-soft:     color-mix(in oklch, var(--p-health)     18%, transparent);
+  --p-platform-soft:   color-mix(in oklch, var(--p-platform)   18%, transparent);
+  --p-habit-soft:      color-mix(in oklch, var(--p-habit)      18%, transparent);
+
+  --accent: var(--p-compliance);
+
+  /* status */
+  --status-done: oklch(75% 0.15 150);
+  --status-progress: oklch(75% 0.16 200);
+  --status-approved: oklch(85% 0.18 130);
+  --status-tba: oklch(80% 0.15 75);
+  --status-team: oklch(72% 0.10 280);
+  --status-declined: oklch(60% 0.18 25);
+
+  --radius-sm: 2px;
+  --radius: 4px;
+  --radius-lg: 8px;
+
+  --shadow-1: 0 1px 0 0 var(--line);
+
+  /* density */
+  --density: 1;
+  --pad: calc(20px * var(--density));
+  --pad-sm: calc(12px * var(--density));
+  --gap: calc(20px * var(--density));
+  --row-h: calc(48px * var(--density));
+}
+
+[data-theme="paper"] {
+  --bg: #F5F3EE;
+  --bg-2: #FFFFFF;
+  --bg-3: #EDEAE3;
+  --bg-4: #E2DED4;
+  --line: #D8D3C7;
+  --line-2: #B8B2A4;
+  --fg: #14141A;
+  --fg-2: #3A3A44;
+  --fg-3: #6A6A75;
+  --fg-4: #9A9AA5;
+  --p-compliance: oklch(60% 0.18 130);
+  --p-health:     oklch(58% 0.18 30);
+  --p-platform:   oklch(54% 0.18 245);
+  --p-habit:      oklch(52% 0.20 305);
+}
+
+[data-theme="court"] {
+  /* high-contrast electric */
+  --bg: #08090C;
+  --bg-2: #101218;
+  --bg-3: #161922;
+  --bg-4: #20242F;
+  --p-compliance: oklch(90% 0.22 130);
+  --p-health:     oklch(75% 0.20 25);
+  --p-platform:   oklch(72% 0.20 230);
+  --p-habit:      oklch(70% 0.22 310);
+}
+
+[data-density="compact"] { --density: 0.78; }
+[data-density="comfortable"] { --density: 1; }
+[data-density="loose"] { --density: 1.18; }
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "ss01", "cv11";
+}
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+.display, .num {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.mono, .ticker {
+  font-family: "Inter", system-ui, sans-serif;
+  font-weight: 500;
+}
+.ticker {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.eyebrow {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+  font-weight: 500;
+}
+
+/* ============================================================
+   APP SHELL
+   ============================================================ */
+.app {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+}
+
+/* ----- Sidebar ----- */
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  background: var(--bg);
+  border-right: 1px solid var(--line);
+  padding: 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  overflow-y: auto;
+}
+.sb-brand {
+  padding: 0 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex-direction: column;
+}
+.sb-mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sb-mark-glyph {
+  width: 28px; height: 28px;
+  background: var(--fg);
+  display: grid;
+  place-items: center;
+  border-radius: 2px;
+}
+.sb-mark-glyph svg { display: block; }
+.sb-mark-text {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+.sb-mark-text small {
+  display: block;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: var(--fg-3);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.sb-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.sb-section-label {
+  padding: 0 20px 6px;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-4);
+}
+.sb-link {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: var(--fg-2);
+  font-family: inherit;
+  font-size: 13px;
+  text-align: left;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: background 120ms, color 120ms, border-color 120ms;
+  font-weight: 500;
+}
+.sb-link:hover { background: var(--bg-2); color: var(--fg); }
+.sb-link[data-active="true"] {
+  color: var(--fg);
+  background: var(--bg-2);
+  border-left-color: var(--accent);
+}
+.sb-link .num {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 11px;
+  color: var(--fg-3);
+  font-weight: 500;
+  min-width: 22px;
+}
+.sb-link[data-active="true"] .num { color: var(--accent); }
+
+.sb-foot {
+  margin-top: auto;
+  padding: 16px 20px;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  line-height: 1.6;
+  color: var(--fg-3);
+  border-top: 1px solid var(--line);
+}
+.sb-foot strong { color: var(--fg-2); font-weight: 600; }
+
+/* Scenario chip in sidebar */
+.sb-scenario {
+  margin: 0 20px;
+  padding: 12px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.sb-scenario-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.sb-scenario-key {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.sb-scenario-val {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+}
+.sb-scenario-segs {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2px;
+  margin-top: 4px;
+}
+.sb-scenario-seg {
+  appearance: none;
+  border: 0;
+  background: var(--bg-3);
+  color: var(--fg-3);
+  padding: 8px 10px;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-weight: 600;
+  text-align: left;
+}
+.sb-scenario-seg[data-on="true"] {
+  background: var(--accent);
+  color: #0E0F12;
+}
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+.main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ----- Topbar (sticky tape) ----- */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 24px;
+  gap: 24px;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 11px;
+  color: var(--fg-3);
+  letter-spacing: 0.04em;
+  overflow: hidden;
+}
+.topbar .live-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--p-compliance);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.4; transform: scale(0.85); }
+}
+.topbar .tk { color: var(--fg-2); }
+.topbar .tk strong { color: var(--fg); font-weight: 600; }
+.topbar .sep { color: var(--fg-4); }
+.topbar-spacer { flex: 1; }
+
+/* ----- Section ----- */
+.section {
+  padding: 40px 32px 64px;
+  border-bottom: 1px solid var(--line);
+  scroll-margin-top: 60px;
+}
+.section[data-flush="true"] { padding-top: 0; }
+.section-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: end;
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--fg);
+}
+.section-num {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--fg-3);
+  margin-bottom: 4px;
+}
+.section-title {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: clamp(28px, 4vw, 44px);
+  letter-spacing: -0.025em;
+  line-height: 1;
+  margin: 0;
+}
+.section-sub {
+  margin-top: 8px;
+  color: var(--fg-2);
+  max-width: 60ch;
+  font-size: 14px;
+}
+.section-side {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 11px;
+  text-align: right;
+  color: var(--fg-3);
+  line-height: 1.5;
+}
+.section-side b { color: var(--fg); font-weight: 600; }
+
+/* ============================================================
+   COVER HERO
+   ============================================================ */
+.cover {
+  padding: 0;
+  border-bottom: 1px solid var(--line);
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
+}
+.cover-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 0;
+  min-height: 540px;
+}
+.cover-left {
+  padding: 56px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+}
+.cover-eyebrow {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.cover-eyebrow .bar {
+  display: inline-block;
+  width: 32px; height: 2px;
+  background: var(--accent);
+}
+.cover-title {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: clamp(56px, 7vw, 96px);
+  letter-spacing: -0.04em;
+  line-height: 0.92;
+  margin: 24px 0 0;
+}
+.cover-title em {
+  font-style: normal;
+  background: linear-gradient(90deg, var(--p-compliance), var(--p-platform));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.cover-sub {
+  margin-top: 16px;
+  max-width: 50ch;
+  font-size: 16px;
+  color: var(--fg-2);
+}
+.cover-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--line);
+  margin-top: 40px;
+}
+.cover-stat {
+  padding: 20px 0 0;
+  border-right: 1px solid var(--line);
+}
+.cover-stat:last-child { border-right: 0; }
+.cover-stat:not(:first-child) { padding-left: 20px; }
+.cover-stat-key {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.cover-stat-val {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: clamp(32px, 4vw, 52px);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-top: 6px;
+}
+.cover-stat-note {
+  font-size: 12px;
+  color: var(--fg-3);
+  margin-top: 6px;
+}
+
+.cover-right {
+  position: relative;
+  background: var(--bg-2);
+  border-left: 1px solid var(--line);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+.cover-quote {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 500;
+  font-size: clamp(20px, 2.2vw, 28px);
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+  text-wrap: pretty;
+  position: relative;
+  z-index: 2;
+}
+.cover-quote .mark {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 48px;
+  line-height: 0;
+  display: block;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.cover-quote em {
+  font-style: italic;
+  color: var(--accent);
+  font-weight: 600;
+}
+.cover-quote-attrib {
+  margin-top: 24px;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 11px;
+  color: var(--fg-3);
+  letter-spacing: 0.06em;
+}
+.cover-rays {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.16;
+}
+
+/* Cover field map (the 4 plays) */
+.cover-plays {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  margin-top: 32px;
+}
+.cover-play {
+  background: var(--bg-3);
+  padding: 12px 10px;
+  border-top: 3px solid var(--c, var(--accent));
+}
+.cover-play .num {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  color: var(--c);
+  letter-spacing: 0.14em;
+  display: block;
+}
+.cover-play .nm {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  margin-top: 4px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+.cover-play .bd {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 11px;
+  color: var(--fg-2);
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+/* ============================================================
+   KPI ROW
+   ============================================================ */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+}
+.kpi {
+  padding: 22px 24px;
+  border-right: 1px solid var(--line);
+  position: relative;
+}
+.kpi:last-child { border-right: 0; }
+.kpi-key {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.kpi-val {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 40px;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-top: 8px;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.kpi-val .delta {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 11px;
+  color: var(--p-compliance);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.kpi-val .delta.down { color: var(--status-declined); }
+.kpi-note {
+  font-size: 12px;
+  color: var(--fg-3);
+  margin-top: 8px;
+  line-height: 1.5;
+}
+.kpi-spark {
+  margin-top: 12px;
+  height: 28px;
+  width: 100%;
+}
+
+/* ============================================================
+   GRID LAYOUTS
+   ============================================================ */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap); }
+.grid-12 { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--gap); }
+.col-7 { grid-column: span 7; }
+.col-5 { grid-column: span 5; }
+.col-8 { grid-column: span 8; }
+.col-4 { grid-column: span 4; }
+.col-6 { grid-column: span 6; }
+.col-12 { grid-column: span 12; }
+
+/* ============================================================
+   PANEL
+   ============================================================ */
+.panel {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+}
+.panel-head {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.panel-title {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.panel-meta {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  color: var(--fg-3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.panel-body {
+  padding: var(--pad);
+  flex: 1;
+}
+.panel-body--flush { padding: 0; }
+
+/* ============================================================
+   ALLOCATION BARS (categorical, per play)
+   ============================================================ */
+.alloc-list { display: flex; flex-direction: column; gap: 14px; }
+.alloc-row {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 14px;
+  align-items: center;
+}
+.alloc-num {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 11px;
+  color: var(--fg-3);
+  font-weight: 600;
+}
+.alloc-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.alloc-name {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.alloc-name .pct {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 11px;
+  color: var(--fg-3);
+  font-weight: 500;
+}
+.alloc-bar {
+  position: relative;
+  height: 8px;
+  background: var(--bg-3);
+}
+.alloc-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--c);
+  transition: width 600ms cubic-bezier(.2,.8,.2,1);
+}
+.alloc-budget {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  min-width: 64px;
+  text-align: right;
+}
+
+/* ============================================================
+   HORIZON BARS (target vs listed)
+   ============================================================ */
+.horizon-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 100px;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  align-items: center;
+}
+.horizon-row:last-child { border-bottom: 0; }
+.horizon-h {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+}
+.horizon-h small {
+  display: block;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  color: var(--fg-3);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  margin-top: 2px;
+}
+.horizon-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.horizon-bar {
+  height: 14px;
+  background: var(--bg-3);
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.horizon-bar .fill {
+  height: 100%;
+  background: var(--bar-color, var(--fg-2));
+}
+.horizon-bar .label {
+  position: absolute;
+  right: 6px;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  color: var(--fg-3);
+  letter-spacing: 0.04em;
+}
+.horizon-bar.target .fill { background: var(--fg-4); }
+.horizon-bar.listed .fill { background: var(--accent); }
+.horizon-variance {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  text-align: right;
+}
+.horizon-variance.pos { color: var(--p-compliance); }
+.horizon-variance.neg { color: var(--status-declined); }
+
+/* ============================================================
+   BUBBLE CHART (score vs roi, sized by budget)
+   ============================================================ */
+.bubble-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 8;
+  background: var(--bg-2);
+}
+.bubble-svg { display: block; width: 100%; height: 100%; }
+.bubble-axis-label {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  fill: var(--fg-3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.bubble-tick {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  fill: var(--fg-4);
+}
+.bubble-grid line { stroke: var(--line); stroke-width: 1; }
+.bubble-grid line.q { stroke: var(--line-2); stroke-dasharray: 2 4; }
+.bubble {
+  cursor: pointer;
+  transition: transform 200ms;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+.bubble:hover { transform: scale(1.15); }
+.bubble-label {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  fill: var(--fg);
+  pointer-events: none;
+}
+.bubble-quad-label {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  fill: var(--fg-4);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   STATUS HEATMAP
+   ============================================================ */
+.status-list { display: flex; flex-direction: column; }
+.status-row {
+  display: grid;
+  grid-template-columns: 1fr auto 50px;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  align-items: center;
+}
+.status-row:last-child { border-bottom: 0; }
+.status-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--fg-2);
+}
+.status-dot {
+  width: 8px; height: 8px;
+  background: var(--c, var(--fg-3));
+}
+.status-cells {
+  display: flex;
+  gap: 2px;
+}
+.status-cell {
+  width: 14px;
+  height: 14px;
+  background: var(--c-soft);
+  border: 1px solid var(--c);
+}
+.status-cell.empty {
+  background: transparent;
+  border-color: var(--line);
+}
+.status-count {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  text-align: right;
+  letter-spacing: -0.02em;
+}
+
+/* ============================================================
+   TOP 5
+   ============================================================ */
+.top5 { display: flex; flex-direction: column; }
+.top5-row {
+  display: grid;
+  grid-template-columns: 28px 1fr auto auto;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+  align-items: center;
+  cursor: pointer;
+  transition: background 120ms;
+  padding-left: 8px;
+  padding-right: 8px;
+  margin-left: -8px;
+  margin-right: -8px;
+}
+.top5-row:last-child { border-bottom: 0; }
+.top5-row:hover { background: var(--bg-3); }
+.top5-rank {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  letter-spacing: -0.04em;
+  color: var(--c, var(--fg));
+}
+.top5-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.top5-title {
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.top5-meta {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  color: var(--fg-3);
+  letter-spacing: 0.04em;
+}
+.top5-score {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  text-align: right;
+  letter-spacing: -0.02em;
+}
+.top5-budget {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 13px;
+  color: var(--fg-2);
+  text-align: right;
+  font-weight: 600;
+  min-width: 48px;
+}
+
+/* ============================================================
+   STRATEGIC PLAYS (drill-down)
+   ============================================================ */
+.plays-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto auto auto auto;
+  gap: 0;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+}
+.play-card {
+  padding: 24px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  border-top: 4px solid var(--c);
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 3;
+  gap: 0;
+  cursor: pointer;
+  transition: background 200ms;
+  position: relative;
+}
+.play-card-thesis { margin-top: 16px; }
+.play-card-stats { margin-top: 16px; }
+.play-card:nth-child(2n) { border-right: 0; }
+.play-card:nth-child(n+3) { border-bottom: 0; }
+.play-card:hover { background: var(--bg-3); }
+.play-card[data-active="true"] {
+  background: var(--bg-3);
+  outline: 1px solid var(--c);
+  outline-offset: -1px;
+}
+.play-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+.play-card-num {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 11px;
+  color: var(--c);
+  letter-spacing: 0.16em;
+  font-weight: 600;
+}
+.play-card-name {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  margin: 6px 0 0;
+}
+.play-card-tag {
+  font-size: 13px;
+  color: var(--fg-2);
+  margin-top: 6px;
+  max-width: 38ch;
+}
+.play-card-mark {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 56px;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+  color: var(--c);
+  text-align: right;
+  align-self: flex-end;
+}
+.play-card-mark small {
+  display: block;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  color: var(--fg-3);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  margin-top: 4px;
+}
+.play-card-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+}
+.play-card-stat {
+  border-right: 1px solid var(--line);
+  padding-right: 12px;
+}
+.play-card-stat:last-child { border-right: 0; padding-right: 0; padding-left: 12px; }
+.play-card-stat:nth-child(2) { padding-left: 12px; }
+.play-card-stat-key {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.play-card-stat-val {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  margin-top: 4px;
+}
+.play-card-thesis {
+  font-size: 13px;
+  color: var(--fg-2);
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+/* drill-down expanded list inside the play */
+.play-detail {
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-top-color: var(--c);
+  border-top-width: 4px;
+  padding: 20px 24px;
+  margin-top: 16px;
+  animation: slidein 240ms cubic-bezier(.2,.8,.2,1);
+}
+@keyframes slidein {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.play-detail-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+.play-detail-title {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.play-detail-close {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--fg-2);
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  padding: 6px 10px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+.play-detail-close:hover { background: var(--bg); color: var(--fg); }
+
+/* ============================================================
+   PROJECT TABLE
+   ============================================================ */
+.tbl-toolbar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 14px 20px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-bottom: 0;
+}
+.tbl-search {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+  max-width: 320px;
+}
+.tbl-search input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--fg);
+  padding: 8px 12px 8px 32px;
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+}
+.tbl-search input:focus { border-color: var(--accent); }
+.tbl-search svg {
+  position: absolute;
+  left: 10px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--fg-3);
+}
+.tbl-chip {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--fg-2);
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 7px 10px;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.tbl-chip:hover { color: var(--fg); border-color: var(--line-2); }
+.tbl-chip[data-on="true"] {
+  background: var(--c, var(--accent));
+  color: #0E0F12;
+  border-color: var(--c, var(--accent));
+}
+.tbl-chip .swatch {
+  width: 8px; height: 8px;
+  background: var(--c);
+}
+.tbl-chip[data-on="true"] .swatch { background: #0E0F12; }
+.tbl-chip-spacer { flex: 1; }
+.tbl-count {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 11px;
+  color: var(--fg-3);
+  letter-spacing: 0.06em;
+}
+
+.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  font-size: 13px;
+}
+.tbl thead th {
+  text-align: left;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+  font-weight: 600;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-2);
+  position: sticky;
+  top: 44px;
+  z-index: 5;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+.tbl thead th:hover { color: var(--fg); }
+.tbl thead th .sort-arrow {
+  display: inline-block;
+  margin-left: 4px;
+  color: var(--accent);
+}
+.tbl tbody td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+.tbl tbody tr {
+  cursor: pointer;
+  transition: background 120ms;
+}
+.tbl tbody tr:hover { background: var(--bg-3); }
+.tbl tbody tr:last-child td { border-bottom: 0; }
+.tbl .num-cell {
+  font-family: "Inter", system-ui, sans-serif;
+  font-weight: 600;
+  text-align: right;
+}
+.tbl .id-cell {
+  font-family: "Inter", system-ui, sans-serif;
+  color: var(--fg-3);
+  font-size: 11px;
+  font-weight: 600;
+}
+.tbl .play-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  font-weight: 600;
+}
+.tbl .play-tag .dot {
+  width: 8px; height: 8px;
+  background: var(--c);
+}
+.tbl .horizon-tag {
+  display: inline-block;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  padding: 3px 8px;
+  border: 1px solid var(--line-2);
+  color: var(--fg-2);
+}
+.tbl .status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--fg-2);
+}
+.tbl .status-tag .dot {
+  width: 6px; height: 6px;
+  background: var(--c);
+  border-radius: 50%;
+}
+.tbl .score-pill {
+  display: inline-block;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 2px 8px;
+  background: var(--bg-3);
+  letter-spacing: -0.01em;
+}
+.tbl .score-pill.hi { background: var(--p-compliance); color: #0E0F12; }
+.tbl .score-pill.md { color: var(--fg); }
+.tbl .core-tag {
+  display: inline-block;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--fg);
+}
+.tbl .core-tag.no { color: var(--fg-4); }
+
+/* ============================================================
+   PROJECT DETAIL MODAL
+   ============================================================ */
+.modal-veil {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(6px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: fadein 200ms ease-out;
+}
+@keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+.modal {
+  width: min(820px, 100%);
+  max-height: 88vh;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--c);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modalin 240ms cubic-bezier(.2,.8,.2,1);
+}
+@keyframes modalin {
+  from { transform: translateY(12px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+.modal-head {
+  padding: 24px 28px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.modal-eyebrow {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 11px;
+  color: var(--c);
+  letter-spacing: 0.14em;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.modal-title {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  margin: 8px 0 0;
+}
+.modal-close {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--fg-2);
+  width: 32px; height: 32px;
+  cursor: pointer;
+  font-size: 16px;
+  display: grid;
+  place-items: center;
+}
+.modal-close:hover { background: var(--bg-3); color: var(--fg); }
+
+.modal-body {
+  padding: 24px 28px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.modal-desc {
+  font-size: 15px;
+  color: var(--fg);
+  line-height: 1.55;
+}
+.modal-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border: 1px solid var(--line);
+  background: var(--bg);
+}
+.modal-stat {
+  padding: 14px 16px;
+  border-right: 1px solid var(--line);
+}
+.modal-stat:last-child { border-right: 0; }
+.modal-stat-key {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.modal-stat-val {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  margin-top: 6px;
+}
+
+.modal-formula {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 16px 18px;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 12px;
+  color: var(--fg-2);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.modal-formula b { color: var(--fg); font-weight: 600; }
+.modal-formula .row { display: flex; justify-content: space-between; }
+.modal-formula .total { color: var(--fg); font-weight: 700; }
+
+.modal-time {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.modal-time-label {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.modal-time-bar {
+  position: relative;
+  height: 32px;
+  background: var(--bg);
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+}
+.modal-time-cell {
+  border-right: 1px solid var(--line);
+  display: grid;
+  place-items: center;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  color: var(--fg-3);
+}
+.modal-time-cell:last-child { border-right: 0; }
+.modal-time-cell.active { background: var(--c); color: #0E0F12; font-weight: 700; }
+
+/* ============================================================
+   SCENARIO STRESS
+   ============================================================ */
+.scenario-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+}
+.scenario-control {
+  padding: 32px;
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.scenario-segs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  background: var(--bg-3);
+  padding: 4px;
+}
+.scenario-seg {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--fg-2);
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.scenario-seg[data-on="true"] {
+  background: var(--accent);
+  color: #0E0F12;
+}
+.scenario-pct {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.scenario-pct-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.scenario-pct-key {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.scenario-pct-val {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 56px;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.scenario-pct-val small {
+  font-size: 24px;
+  color: var(--fg-3);
+  margin-left: 4px;
+  letter-spacing: 0;
+}
+.scenario-slider {
+  width: 100%;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  height: 24px;
+}
+.scenario-slider::-webkit-slider-runnable-track {
+  height: 4px;
+  background: var(--bg-3);
+}
+.scenario-slider::-moz-range-track {
+  height: 4px;
+  background: var(--bg-3);
+}
+.scenario-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px; height: 18px;
+  background: var(--accent);
+  border: 0;
+  margin-top: -7px;
+  cursor: pointer;
+}
+.scenario-slider::-moz-range-thumb {
+  width: 18px; height: 18px;
+  background: var(--accent);
+  border: 0;
+  cursor: pointer;
+}
+.scenario-ticks {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  color: var(--fg-3);
+  letter-spacing: 0.06em;
+}
+.scenario-ticks span { text-align: center; }
+.scenario-ticks span:first-child { text-align: left; }
+.scenario-ticks span:last-child { text-align: right; }
+.scenario-note {
+  font-size: 13px;
+  color: var(--fg-2);
+  line-height: 1.6;
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+}
+
+.scenario-output {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.scenario-output-key {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.scenario-envelope {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: clamp(72px, 9vw, 128px);
+  letter-spacing: -0.04em;
+  line-height: 0.92;
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+}
+.scenario-envelope .cur { color: var(--accent); transition: color 200ms; }
+.scenario-envelope-bd {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+.scenario-envelope-bd-cell { padding-right: 16px; }
+.scenario-envelope-bd-cell + .scenario-envelope-bd-cell {
+  padding-left: 16px;
+  border-left: 1px solid var(--line);
+}
+
+.scenario-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.scenario-stack-row {
+  display: grid;
+  grid-template-columns: 200px 1fr 80px;
+  gap: 14px;
+  align-items: center;
+}
+.scenario-stack-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.scenario-stack-name .dot {
+  width: 8px; height: 8px;
+  background: var(--c);
+}
+.scenario-stack-bar {
+  height: 18px;
+  background: var(--bg-3);
+  position: relative;
+}
+.scenario-stack-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--c);
+  transition: width 400ms cubic-bezier(.2,.8,.2,1);
+}
+.scenario-stack-val {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  text-align: right;
+  letter-spacing: -0.02em;
+}
+
+/* ============================================================
+   TIMELINE
+   ============================================================ */
+.timeline-wrap {
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+}
+.timeline-tools {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.timeline-play-btn {
+  appearance: none;
+  background: var(--accent);
+  border: 0;
+  color: #0E0F12;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 8px 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.timeline-play-btn[data-playing="true"] {
+  background: var(--bg-3);
+  color: var(--fg);
+}
+.timeline-year-display {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  min-width: 70px;
+}
+.timeline-year-slider {
+  flex: 1;
+  min-width: 200px;
+  max-width: 360px;
+}
+.timeline-year-slider input {
+  width: 100%;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+.timeline-year-slider input::-webkit-slider-runnable-track {
+  height: 3px;
+  background: var(--bg-3);
+}
+.timeline-year-slider input::-webkit-slider-thumb {
+  appearance: none;
+  width: 14px; height: 14px;
+  background: var(--accent);
+  margin-top: -5px;
+  cursor: pointer;
+}
+.timeline-year-slider input::-moz-range-track { height: 3px; background: var(--bg-3); }
+.timeline-year-slider input::-moz-range-thumb {
+  width: 14px; height: 14px; background: var(--accent); border: 0;
+}
+
+.timeline-tools-meta {
+  margin-left: auto;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 11px;
+  color: var(--fg-3);
+  letter-spacing: 0.06em;
+}
+
+.gantt {
+  display: grid;
+  grid-template-columns: 280px 60px repeat(9, 1fr);
+  font-size: 12px;
+  border-top: 0;
+}
+.gantt-head {
+  display: contents;
+}
+.gantt-head > div {
+  padding: 12px 10px;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+}
+.gantt-head .yr {
+  text-align: center;
+  position: relative;
+}
+.gantt-head .yr.cur {
+  color: var(--accent);
+  background: var(--bg-3);
+}
+.gantt-row {
+  display: contents;
+}
+.gantt-row > div {
+  padding: 0;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+}
+.gantt-row .lbl {
+  padding: 12px;
+  gap: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.gantt-row .lbl:hover { color: var(--fg); background: var(--bg-3); }
+.gantt-row .lbl .id {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  color: var(--fg-3);
+  font-weight: 600;
+}
+.gantt-row .lbl .nm {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+.gantt-row .bd {
+  font-family: "Inter", system-ui, sans-serif;
+  font-weight: 600;
+  text-align: right;
+  padding: 0 12px;
+  color: var(--fg-2);
+  justify-content: flex-end;
+}
+.gantt-row .yr {
+  position: relative;
+  height: 100%;
+  border-right: 1px solid var(--line);
+}
+.gantt-row .yr.cur { background: rgba(255,255,255,0.02); }
+.gantt-row .yr-bar {
+  position: absolute;
+  inset: 12px 0;
+  background: var(--c);
+}
+.gantt-row .yr-bar.start { border-left: 2px solid var(--fg); }
+.gantt-row .yr-bar.end { border-right: 2px solid var(--fg); }
+.gantt-row .yr-bar.dim { opacity: 0.32; }
+.gantt-row .yr-bar.future { opacity: 0.18; background-image: repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(0,0,0,0.4) 4px, rgba(0,0,0,0.4) 8px); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer {
+  padding: 32px;
+  border-top: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 11px;
+  color: var(--fg-3);
+  letter-spacing: 0.04em;
+}
+.footer b { color: var(--fg-2); font-weight: 600; }
+.footer-credit { text-align: right; }
+
+/* ============================================================
+   UTIL
+   ============================================================ */
+.tag {
+  display: inline-block;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 3px 8px;
+  border: 1px solid var(--line-2);
+  color: var(--fg-2);
+}
+
+@media (max-width: 980px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar { position: static; height: auto; }
+  .grid-2, .grid-3, .plays-grid, .scenario-wrap, .cover-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .kpi-row { grid-template-columns: 1fr 1fr; }
+}
+
+/* ============================================================
+   ====  KIMIE REVIEW PATCH  ==================================
+   - Cover stays dark; analytical sections get a bright surface
+   - Natural fade between sections (dark → mid → light)
+   - Topbar simplified (was random ticker, now contextual chip)
+   - Scenario slider: massively more obvious, big track + ticks
+   - Status: real heatmap matrix (play × status), not box rows
+   - Density: looser default
+   - Overlap fixes
+   ============================================================ */
+
+/* --- Density: bump comfortable so things breathe --- */
+[data-density="comfortable"] { --density: 1.12; }
+[data-density="loose"] { --density: 1.32; }
+
+/* --- App becomes a tonal stack --- */
+.main {
+  background: linear-gradient(
+    180deg,
+    #0E0F12 0%,
+    #0E0F12 6%,    /* cover stays dark */
+    #1A1C22 12%,   /* topbar transitional */
+    #F4F1EA 22%,   /* executive: paper */
+    #F4F1EA 100%
+  );
+}
+[data-theme="paper"] .main {
+  background: linear-gradient(180deg, #14141A 0%, #14141A 7%, #2A2A33 12%, #F5F3EE 22%, #F5F3EE 100%);
+}
+[data-theme="court"] .main {
+  background: linear-gradient(180deg, #08090C 0%, #08090C 7%, #161922 14%, #08090C 22%, #08090C 100%);
+}
+
+/* --- Per-section surface tones (the natural fade) --- */
+.section[data-tone="paper-warm"] {
+  --bg: #F4F1EA;
+  --bg-2: #FFFFFF;
+  --bg-3: #ECE7DC;
+  --bg-4: #DFD8C9;
+  --line: #DCD5C5;
+  --line-2: #B6AC95;
+  --fg: #16161B;
+  --fg-2: #3D3D47;
+  --fg-3: #6F6F79;
+  --fg-4: #A6A29A;
+  --p-compliance: oklch(58% 0.20 130);
+  --p-health:     oklch(56% 0.20 28);
+  --p-platform:   oklch(50% 0.20 245);
+  --p-habit:      oklch(48% 0.22 305);
+  background: var(--bg);
+  color: var(--fg);
+  border-bottom: 0;
+}
+.section[data-tone="paper-cool"] {
+  --bg: #EEF1F4;
+  --bg-2: #FFFFFF;
+  --bg-3: #E4E8ED;
+  --bg-4: #D6DCE3;
+  --line: #D4D9E0;
+  --line-2: #ABB3BD;
+  --fg: #14161B;
+  --fg-2: #383B43;
+  --fg-3: #6A6E78;
+  --fg-4: #A2A6B0;
+  --p-compliance: oklch(58% 0.20 130);
+  --p-health:     oklch(56% 0.20 28);
+  --p-platform:   oklch(50% 0.20 245);
+  --p-habit:      oklch(48% 0.22 305);
+  background: var(--bg);
+  color: var(--fg);
+  border-bottom: 0;
+}
+.section[data-tone="paper-bright"] {
+  --bg: #FFFFFF;
+  --bg-2: #F6F4EE;
+  --bg-3: #EDEAE0;
+  --bg-4: #DFD9C8;
+  --line: #DBD4C2;
+  --line-2: #B5AB94;
+  --fg: #14141A;
+  --fg-2: #3A3A44;
+  --fg-3: #6A6A75;
+  --fg-4: #A09B92;
+  --p-compliance: oklch(58% 0.20 130);
+  --p-health:     oklch(56% 0.20 28);
+  --p-platform:   oklch(50% 0.20 245);
+  --p-habit:      oklch(48% 0.22 305);
+  background: var(--bg);
+  color: var(--fg);
+  border-bottom: 0;
+}
+.section[data-tone="dark-deep"] {
+  background: #0E0F12;
+  color: #F4F5F7;
+}
+.section[data-tone="paper-warm"] .panel,
+.section[data-tone="paper-cool"] .panel,
+.section[data-tone="paper-bright"] .panel {
+  background: var(--bg-2);
+  border-color: var(--line);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.03);
+}
+
+/* Wrap-up: paper sections override sticky tbl head bg */
+.section[data-tone^="paper"] .tbl,
+.section[data-tone^="paper"] .tbl thead th,
+.section[data-tone^="paper"] .tbl tbody tr,
+.section[data-tone^="paper"] .gantt-grid,
+.section[data-tone^="paper"] .timeline-wrap,
+.section[data-tone^="paper"] .scenario-wrap,
+.section[data-tone^="paper"] .plays-grid {
+  background: var(--bg-2);
+}
+.section[data-tone^="paper"] .gantt-row .yr.cur { background: var(--bg-3); }
+.section[data-tone^="paper"] .play-card:hover,
+.section[data-tone^="paper"] .play-card[data-active="true"],
+.section[data-tone^="paper"] .play-detail,
+.section[data-tone^="paper"] .top5-row:hover,
+.section[data-tone^="paper"] .tbl tbody tr:hover {
+  background: var(--bg-3);
+}
+.section[data-tone^="paper"] .tbl-tools,
+.section[data-tone^="paper"] .scenario-control,
+.section[data-tone^="paper"] .scenario-segs {
+  background: var(--bg-2);
+}
+.section[data-tone^="paper"] .scenario-segs { background: var(--bg-3); }
+.section[data-tone^="paper"] .alloc-track,
+.section[data-tone^="paper"] .horizon-bar,
+.section[data-tone^="paper"] .scenario-stack-bar,
+.section[data-tone^="paper"] .modal-formula {
+  background: var(--bg-3);
+}
+.section[data-tone^="paper"] .bubble-wrap { background: var(--bg-2); }
+.section[data-tone^="paper"] .tbl-search input,
+.section[data-tone^="paper"] .tbl-chip {
+  background: var(--bg);
+  color: var(--fg);
+}
+.section[data-tone^="paper"] .horizon-bar.target .fill { background: #C9C2AE; }
+
+/* --- Section headers on paper get more presence --- */
+.section[data-tone^="paper"] .section-head { border-bottom-color: var(--fg); }
+.section[data-tone^="paper"] .section-num { color: var(--fg-3); }
+
+/* --- Topbar: simpler, contextual --- */
+.topbar {
+  background: rgba(14, 15, 18, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  height: 48px;
+  padding: 0 24px;
+  gap: 16px;
+}
+.topbar-progress {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+}
+.topbar-progress-bar {
+  flex: 1;
+  height: 3px;
+  background: rgba(255,255,255,0.08);
+  position: relative;
+  overflow: hidden;
+  margin: 0 14px;
+  max-width: 360px;
+}
+.topbar-progress-bar > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--p-compliance);
+  transition: width 220ms cubic-bezier(.2,.8,.2,1);
+}
+.topbar-section-label {
+  color: #fff;
+  font-weight: 600;
+}
+.topbar-scenario {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid rgba(255,255,255,0.18);
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fff;
+}
+.topbar-scenario .swatch {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent);
+}
+.topbar-scenario b { color: var(--p-compliance); font-weight: 700; }
+
+/* --- Sidebar stays dark; matches cover --- */
+.sidebar { background: #0B0C10; border-right-color: rgba(255,255,255,0.06); }
+
+/* ============================================================
+   SCENARIO SLIDER — much more obvious
+   ============================================================ */
+.scenario-slider-block {
+  position: relative;
+  padding: 28px 20px 36px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  margin-top: 4px;
+}
+.scenario-slider-hint {
+  position: absolute;
+  top: -10px;
+  left: 16px;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--bg);
+  background: var(--p-compliance);
+  padding: 4px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.scenario-slider-hint::before {
+  content: "";
+  display: inline-block;
+  width: 0; height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-right: 5px solid currentColor;
+}
+.scenario-slider-hint::after {
+  content: "";
+  display: inline-block;
+  width: 0; height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 5px solid currentColor;
+}
+.scenario-slider {
+  height: 44px !important;
+}
+.scenario-slider::-webkit-slider-runnable-track {
+  height: 12px !important;
+  background: var(--bg-3) !important;
+  background-image: linear-gradient(90deg,
+    color-mix(in oklch, var(--p-platform) 35%, transparent) 0%,
+    color-mix(in oklch, var(--p-compliance) 50%, transparent) 50%,
+    color-mix(in oklch, var(--p-health) 45%, transparent) 100%) !important;
+  border: 1px solid var(--line-2) !important;
+  border-radius: 2px;
+}
+.scenario-slider::-moz-range-track {
+  height: 12px !important;
+  background: var(--bg-3) !important;
+  background-image: linear-gradient(90deg, var(--p-platform), var(--p-compliance), var(--p-health)) !important;
+  border: 1px solid var(--line-2) !important;
+  border-radius: 2px;
+}
+.scenario-slider::-webkit-slider-thumb {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 50% !important;
+  background: var(--fg) !important;
+  border: 4px solid var(--p-compliance) !important;
+  margin-top: -10px !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.18), 0 0 0 4px color-mix(in oklch, var(--p-compliance) 22%, transparent);
+  cursor: grab !important;
+}
+.scenario-slider::-webkit-slider-thumb:active { cursor: grabbing !important; }
+.scenario-slider::-moz-range-thumb {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 50% !important;
+  background: var(--fg) !important;
+  border: 4px solid var(--p-compliance) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+  cursor: grab !important;
+}
+.scenario-ticks {
+  position: relative;
+  margin-top: 12px;
+  height: 18px;
+}
+.scenario-ticks .tick {
+  position: absolute;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  color: var(--fg-3);
+  letter-spacing: 0.04em;
+}
+.scenario-ticks .tick::before {
+  content: "";
+  width: 1px; height: 6px;
+  background: var(--line-2);
+}
+.scenario-ticks .tick.named {
+  color: var(--fg);
+  font-weight: 700;
+}
+.scenario-ticks .tick.named::before { background: var(--fg); height: 8px; }
+.scenario-ticks .tick.active {
+  color: var(--p-compliance);
+}
+.scenario-ticks .tick.active::before { background: var(--p-compliance); height: 12px; width: 2px; }
+
+/* Timeline play scrubber: also more obvious */
+.timeline-year-slider {
+  flex: 1 1 auto !important;
+  min-width: 280px !important;
+  max-width: none !important;
+  padding: 6px 14px;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  position: relative;
+}
+.timeline-year-slider::before {
+  content: "DRAG TO SCRUB";
+  position: absolute;
+  top: -7px; left: 14px;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  font-weight: 700;
+  color: var(--bg);
+  background: var(--p-compliance);
+  padding: 2px 8px;
+}
+.timeline-year-slider input::-webkit-slider-runnable-track {
+  height: 6px !important;
+  background: var(--bg-4) !important;
+}
+.timeline-year-slider input::-webkit-slider-thumb {
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 50% !important;
+  background: var(--fg) !important;
+  border: 3px solid var(--p-compliance) !important;
+  margin-top: -8px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* ============================================================
+   STATUS HEATMAP — real matrix (play × status)
+   ============================================================ */
+.heatmap {
+  display: grid;
+  grid-template-columns: 160px repeat(6, 1fr) 64px;
+  gap: 0;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+}
+.heatmap > .hm-cell {
+  padding: 12px 10px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+}
+.heatmap > .hm-cell:last-child { border-right: 0; }
+.heatmap > .hm-row-end { border-right: 0; }
+.heatmap .hm-corner {
+  background: var(--bg-3);
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+  font-weight: 600;
+  line-height: 1.3;
+  align-items: flex-end;
+}
+.heatmap .hm-col-head {
+  background: var(--bg-3);
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  font-weight: 600;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  justify-content: center;
+}
+.heatmap .hm-col-head .ct { font-size: 11px; color: var(--fg-3); }
+.heatmap .hm-row-head {
+  background: var(--bg-3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--fg);
+  font-size: 12px;
+}
+.heatmap .hm-row-head::before {
+  content: "";
+  width: 10px; height: 10px;
+  background: var(--c);
+  flex-shrink: 0;
+}
+.heatmap .hm-row-end {
+  background: var(--bg-3);
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  justify-content: center;
+  color: var(--fg);
+}
+.hm-data {
+  --intensity: 0;
+  background: color-mix(in oklch, var(--c) calc(var(--intensity) * 75%), transparent);
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  justify-content: center;
+  position: relative;
+  cursor: default;
+  transition: background 200ms;
+  color: var(--fg);
+}
+.hm-data[data-zero="true"] { color: var(--fg-4); font-weight: 400; }
+.hm-data:hover {
+  background: color-mix(in oklch, var(--c) calc((var(--intensity) * 75% + 15%) ), transparent) !important;
+  outline: 1px solid var(--c);
+  outline-offset: -1px;
+}
+
+/* ============================================================
+   OVERLAP FIXES
+   ============================================================ */
+/* Bubble chart labels — only show on hover/large bubbles to avoid clutter */
+.bubble-label { paint-order: stroke fill; stroke: var(--bg-2); stroke-width: 3px; stroke-linejoin: round; }
+.section[data-tone^="paper"] .bubble-label { stroke: #fff; }
+.section[data-tone^="paper"] .bubble-quad-label { fill: #B5AB94; }
+
+/* Modal time cells: shrink the year text on narrow widths so it doesn't overflow */
+.modal-time-cell {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  min-width: 0;
+}
+.modal-time-cell.active { font-size: 11px; }
+.modal-time {
+  overflow: hidden;
+}
+
+/* Cover quote: ensure it doesn't sit on top of the rays */
+.cover-quote { position: relative; z-index: 2; }
+.cover-rays { z-index: 0; }
+.cover-quote, .cover-plays { background: rgba(14,15,18,0.55); backdrop-filter: blur(2px); }
+
+/* Play card: stop the giant numeric mark from colliding with the title */
+.play-card-head {
+  flex-wrap: wrap;
+}
+.play-card-mark {
+  font-size: 44px !important;
+}
+.play-card-name {
+  word-break: break-word;
+  hyphens: auto;
+}
+
+/* Footer wraps cleanly on paper */
+.section[data-tone^="paper"] + .footer,
+.footer {
+  background: #0E0F12;
+  color: rgba(255,255,255,0.5);
+  border-top: 0;
+}
+.footer b { color: #fff; }
+
+/* Sticky table head: needs darker contrast on paper */
+.section[data-tone^="paper"] .tbl thead th {
+  background: var(--bg-3);
+  color: var(--fg-2);
+  border-bottom: 2px solid var(--fg);
+}
+
+/* Bigger section padding so it breathes */
+.section { padding: 56px 40px 80px; }
+.section[data-tone^="paper"] { padding: 72px 40px 96px; }
+
+/* Tweaks panel readability on paper sections */
+.section[data-tone^="paper"] .panel-head { background: var(--bg-2); }
+
+  </style>
+</head>
+<body data-theme="stadium" data-density="comfortable">
+  <div id="root"></div>
+
+  <script>
+// Decathlon Innovation Portfolio — data layer
+// Source: workshop CSVs, FY2024/FY2025 disclosures
+window.PORTFOLIO_DATA = (function () {
+  const PLAYS = [
+    {
+      id: "compliance",
+      num: "01",
+      name: "Weaponise Compliance",
+      tagline: "Turn EU regulation into redesign-speed advantage",
+      projects: 6,
+      budget: 125,
+      pct: 25.0,
+      avgRoi: 8.5,
+      avgScore: 5.62,
+      thesis:
+        "Vertical integration means we can redesign faster than rivals when CBAM, DPP, and EPR rules bite. Compliance becomes a moat, not a tax.",
+    },
+    {
+      id: "health",
+      num: "02",
+      name: "Monetise Preventive Health",
+      tagline: "Memberships reimbursed by insurers as preventive care",
+      projects: 6,
+      budget: 125,
+      pct: 25.0,
+      avgRoi: 16.3,
+      avgScore: 5.67,
+      thesis:
+        "Ageing European populations + insurer pressure on prevention = public-health budgets unlocked. Highest-LTV segment is 60+, already moving.",
+    },
+    {
+      id: "platform",
+      num: "03",
+      name: "Platform Over Product",
+      tagline: "Subscription rental + resale + repair > one-time sales",
+      projects: 6,
+      budget: 125,
+      pct: 25.0,
+      avgRoi: 16.8,
+      avgScore: 5.53,
+      thesis:
+        "The Sport Commons: members access gear, don't own it. €19/month subscription stack is the recurring revenue spine. Micro-factories close the loop.",
+    },
+    {
+      id: "habit",
+      num: "04",
+      name: "Own the Habit Loop",
+      tagline: "Compete on weekly visits, not annual purchases",
+      projects: 6,
+      budget: 125,
+      pct: 25.0,
+      avgRoi: 16.2,
+      avgScore: 5.45,
+      thesis:
+        "Stores become arenas. Connected products chime when it's time to move. AI-native retail personalises habit, not basket. The chime, twice.",
+    },
+  ];
+
+  const PROJECTS = [
+    { id: 1, title: "Equipment Commons — owned rental pool", play: "platform", budget: 50, core: true, brand: "High", brandS: 4, labor: "Very High", laborS: 5, roi: 18.0, impact: 4.67, start: 2026, dur: 3, end: 2028, horizon: "H2", urgency: 6.0, score: 5.34, market: "Europe", status: "Approved", priority: true, desc: "Build the owned rental pool that members access via subscription — anchor of the Sport Commons model." },
+    { id: 2, title: "Subscription stack — €19/month membership", play: "platform", budget: 25, core: true, brand: "High", brandS: 4, labor: "High", laborS: 4, roi: 22.0, impact: 4.33, start: 2026, dur: 1, end: 2026, horizon: "H1", urgency: 9.0, score: 6.67, market: "Europe", status: "Approved", priority: true, desc: "Recurring revenue infrastructure: billing, entitlements, member portal, churn analytics." },
+    { id: 3, title: "Resale infrastructure — buyback, refurbish", play: "platform", budget: 15, core: true, brand: "Medium", brandS: 3, labor: "High", laborS: 4, roi: 15.0, impact: 4.00, start: 2026, dur: 1, end: 2026, horizon: "H1", urgency: 9.0, score: 6.50, market: "France", status: "In progress", priority: true, desc: "Scale the existing second-hand offer (already in 43 markets) into a structured resale engine with credits." },
+    { id: 4, title: "Micro-factories — Morocco, Portugal, Romania", play: "platform", budget: 30, core: true, brand: "High", brandS: 4, labor: "Very High", laborS: 5, roi: 16.0, impact: 4.67, start: 2027, dur: 5, end: 2031, horizon: "H3", urgency: 3.0, score: 3.84, market: "Europe", status: "Approved", priority: true, desc: "Small-batch custom gear in weeks, not months. Replace long-cycle Asian production." },
+    { id: 5, title: "Repair workshop network — scale to all stores", play: "platform", budget: 10, core: true, brand: "Medium", brandS: 3, labor: "Medium", laborS: 3, roi: 10.0, impact: 3.67, start: 2026, dur: 1, end: 2026, horizon: "H1", urgency: 9.0, score: 6.34, market: "World", status: "In progress", priority: true, desc: "Continue scaling repair workshops as a margin and loyalty driver." },
+    { id: 6, title: "Coaching subscription — partnered coaches", play: "platform", budget: 5, core: false, brand: "Medium", brandS: 3, labor: "High", laborS: 4, roi: 20.0, impact: 3.00, start: 2027, dur: 3, end: 2029, horizon: "H2", urgency: 6.0, score: 4.50, market: "Europe", status: "To be approved", priority: true, desc: "Premium tier of the membership: human coaching layered onto digital." },
+    { id: 7, title: "Store-as-arena conversion — 200 stores", play: "habit", budget: 50, core: true, brand: "High", brandS: 4, labor: "Very High", laborS: 5, roi: 14.0, impact: 4.67, start: 2026, dur: 3, end: 2028, horizon: "H2", urgency: 6.0, score: 5.34, market: "Europe", status: "Approved", priority: true, desc: "Trade transactional floor space for activity zones. Compete on weekly visits, not annual purchases." },
+    { id: 8, title: "Connected products — IoT (the chime)", play: "habit", budget: 25, core: true, brand: "High", brandS: 4, labor: "High", laborS: 4, roi: 18.0, impact: 4.33, start: 2027, dur: 3, end: 2029, horizon: "H2", urgency: 6.0, score: 5.17, market: "World", status: "Approved", priority: true, desc: "Connected products generating data. Foundation for the chime and personalisation." },
+    { id: 9, title: "AR/VR virtual try-on", play: "habit", budget: 10, core: false, brand: "Medium", brandS: 3, labor: "Medium", laborS: 3, roi: 12.0, impact: 2.67, start: 2026, dur: 1, end: 2026, horizon: "H1", urgency: 9.0, score: 5.84, market: "Europe", status: "To be approved", priority: true, desc: "Reduce return rates and improve fit confidence via virtual try-on." },
+    { id: 10, title: "Community CRM — habit & frequency engine", play: "habit", budget: 20, core: true, brand: "High", brandS: 4, labor: "High", laborS: 4, roi: 20.0, impact: 4.33, start: 2026, dur: 1, end: 2026, horizon: "H1", urgency: 9.0, score: 6.67, market: "Europe", status: "In progress", priority: true, desc: "Customer data platform optimized for visit-frequency, not basket size." },
+    { id: 11, title: "Decathlon Live — sport metaverse pilot", play: "habit", budget: 5, core: false, brand: "Medium", brandS: 3, labor: "Very High", laborS: 5, roi: 8.0, impact: 3.33, start: 2030, dur: 4, end: 2033, horizon: "H3", urgency: 3.0, score: 3.17, market: "World", status: "To be approved", priority: false, desc: "Always-on sport metaverse: avatars compete while real bodies are tracked at home. Optionality bet." },
+    { id: 12, title: "AI-native retail — hyper-personalised", play: "habit", budget: 5, core: true, brand: "High", brandS: 4, labor: "Medium", laborS: 3, roi: 25.0, impact: 4.00, start: 2026, dur: 1, end: 2026, horizon: "H1", urgency: 9.0, score: 6.50, market: "World", status: "Approved", priority: true, desc: "AI-native retail across app, web, and store. Personalisation at scale." },
+    { id: 13, title: "EU Digital Product Passport — full implementation", play: "compliance", budget: 45, core: true, brand: "High", brandS: 4, labor: "Very High", laborS: 5, roi: 10.0, impact: 4.67, start: 2026, dur: 3, end: 2028, horizon: "H2", urgency: 6.0, score: 5.34, market: "Europe", status: "Approved", priority: true, desc: "Mandatory under EU regulation. Vertical integration turns this into a redesign-speed advantage." },
+    { id: 14, title: "Carbon labelling — every product, every channel", play: "compliance", budget: 20, core: true, brand: "High", brandS: 4, labor: "Medium", laborS: 3, roi: 8.0, impact: 4.00, start: 2026, dur: 1, end: 2026, horizon: "H1", urgency: 9.0, score: 6.50, market: "Europe", status: "In progress", priority: true, desc: "Carbon footprint visible at point of sale, like nutri-labels. Brand trust play." },
+    { id: 15, title: "Eco-design redesign — accelerate to 80%+", play: "compliance", budget: 35, core: true, brand: "High", brandS: 4, labor: "Very High", laborS: 5, roi: 12.0, impact: 4.67, start: 2026, dur: 3, end: 2028, horizon: "H2", urgency: 6.0, score: 5.34, market: "World", status: "Approved", priority: true, desc: "53.9% of sales already eco-designed. Vertical integration enables fastest-in-industry redesign." },
+    { id: 16, title: "Traceability — bio-based & recyclable materials", play: "compliance", budget: 10, core: false, brand: "Medium", brandS: 3, labor: "High", laborS: 4, roi: 9.0, impact: 3.00, start: 2027, dur: 3, end: 2029, horizon: "H2", urgency: 6.0, score: 4.50, market: "Europe", status: "To be approved", priority: true, desc: "Material renovation pipeline tied to circular economy commitments." },
+    { id: 17, title: "EPR (Extended Producer Responsibility) ops model", play: "compliance", budget: 10, core: true, brand: "Medium", brandS: 3, labor: "Medium", laborS: 3, roi: 7.0, impact: 3.67, start: 2026, dur: 1, end: 2026, horizon: "H1", urgency: 9.0, score: 6.34, market: "France", status: "Approved", priority: true, desc: "Operational compliance with French / EU EPR regimes. Mid-tier rivals struggle here." },
+    { id: 18, title: "CBAM readiness — supply-chain carbon accounting", play: "compliance", budget: 5, core: false, brand: "Low", brandS: 2, labor: "Medium", laborS: 3, roi: 5.0, impact: 2.33, start: 2026, dur: 1, end: 2026, horizon: "H1", urgency: 9.0, score: 5.67, market: "Europe", status: "To be approved", priority: true, desc: "Carbon Border Adjustment Mechanism prep. Defensive — required for European retail post-2026." },
+    { id: 19, title: "Insurer integrations — FR & NL pilot", play: "health", budget: 30, core: true, brand: "High", brandS: 4, labor: "Very High", laborS: 5, roi: 20.0, impact: 4.67, start: 2027, dur: 3, end: 2029, horizon: "H2", urgency: 6.0, score: 5.34, market: "France", status: "Approved", priority: true, desc: "Negotiate reimbursement with Achmea & AXA for memberships as preventive care. Unlocks public health budgets." },
+    { id: 20, title: "Member health data platform", play: "health", budget: 30, core: true, brand: "High", brandS: 4, labor: "High", laborS: 4, roi: 15.0, impact: 4.33, start: 2026, dur: 3, end: 2028, horizon: "H2", urgency: 6.0, score: 5.17, market: "Europe", status: "In progress", priority: true, desc: "Foundational data infrastructure required for insurance reimbursement and personalised coaching." },
+    { id: 21, title: "60+ active living programme", play: "health", budget: 25, core: true, brand: "High", brandS: 4, labor: "High", laborS: 4, roi: 18.0, impact: 4.33, start: 2026, dur: 1, end: 2026, horizon: "H1", urgency: 9.0, score: 6.67, market: "Europe", status: "Approved", priority: true, desc: "Ageing active population is the segment with highest LTV in the Sport Commons scenario." },
+    { id: 22, title: "Sport-as-healthcare partnerships", play: "health", budget: 20, core: false, brand: "Medium", brandS: 3, labor: "High", laborS: 4, roi: 13.0, impact: 3.00, start: 2027, dur: 3, end: 2029, horizon: "H2", urgency: 6.0, score: 4.50, market: "Europe", status: "To be approved", priority: true, desc: "Position Decathlon as a preventive-care infrastructure partner, not just a retailer." },
+    { id: 23, title: "B2B2C sales engine — through insurers", play: "health", budget: 15, core: true, brand: "High", brandS: 4, labor: "Medium", laborS: 3, roi: 22.0, impact: 4.00, start: 2026, dur: 1, end: 2026, horizon: "H1", urgency: 9.0, score: 6.50, market: "France", status: "Approved", priority: true, desc: "Sales motion + tech to sell memberships through insurer channels rather than direct." },
+    { id: 24, title: "Wellness data analytics — anonymised insights", play: "health", budget: 5, core: false, brand: "Medium", brandS: 3, labor: "Medium", laborS: 3, roi: 10.0, impact: 2.67, start: 2027, dur: 1, end: 2027, horizon: "H1", urgency: 9.0, score: 5.84, market: "World", status: "Team to be assigned", priority: true, desc: "Aggregate insights sold to public health authorities and research institutions." },
+  ];
+
+  const SCENARIOS = {
+    conservative: { label: "Conservative", pct: 2.5, projectBudget: 315, hc: 105, total: 420, note: "Reverts to multi-brand-retailer benchmark — appropriate after the 2030 transformation phase." },
+    plan: { label: "Plan", pct: 4.0, projectBudget: 504, hc: 168, total: 672, note: "The defended budget. €670M = 4% of FY2025 revenue. Vertically-integrated brand spend tier." },
+    aggressive: { label: "Aggressive", pct: 5.0, projectBudget: 630, hc: 210, total: 840, note: "Caps at 5% — defensible only as a temporary catch-up bet, not a steady state." },
+  };
+
+  const HORIZON_BUDGETS = {
+    H1: { target: 350, listed: 165, pct: 33.0 },
+    H2: { target: 140, listed: 300, pct: 60.0 },
+    H3: { target: 80, listed: 35, pct: 7.0 },
+  };
+
+  const STATUS_COUNTS = [
+    { name: "Done", count: 0, pct: 0 },
+    { name: "In progress", count: 5, pct: 21 },
+    { name: "Approved", count: 12, pct: 50 },
+    { name: "To be approved", count: 6, pct: 25 },
+    { name: "Team to be assigned", count: 1, pct: 4 },
+    { name: "Declined", count: 0, pct: 0 },
+  ];
+
+  const SOURCES = [
+    { src: "Decathlon", type: "Annual Report", year: "FY2024", use: "€16.2B revenue baseline · digital sales 20% of revenue · 53.9% eco-designed" },
+    { src: "Decathlon", type: "Press Release", year: "FY2025", use: "€16.8B revenue (+4% YoY) · €100M India + €100M Germany expansion announced" },
+    { src: "JD Sports Fashion", type: "Annual Report", year: "2024-25", use: "£60M IT infrastructure · benchmark for mid-size multi-brand retailer (~2.8%)" },
+    { src: "Dick's Sporting Goods", type: "Form 10-K", year: "FY2024", use: "$800M total capex incl. tech · benchmark for 3.2% innovation spend" },
+    { src: "Foot Locker", type: "Form 8-K", year: "FY2024", use: "Adjusted capex $330M incl. ~$50M tech · 2.5% benchmark" },
+    { src: "Nike / Adidas", type: "Form 10-K / Annual Report", year: "FY2024", use: "5–7% of revenue benchmark for vertically integrated brand model" },
+    { src: "BCG", type: "Innovation Edge for Retail Leaders", year: "2024", use: "Retail leaders to grow innovation investment +38% through 2027" },
+    { src: "Foundernest", type: "Innovation Budget Benchmarks", year: "2026", use: "Global average 6.6% · traditional industries 3-6% · Fortune 500 3-8%" },
+    { src: "EU Commission", type: "DG ENV — Digital Product Passport", year: "2025-26", use: "Regulatory deadline driving the 2030 'Chime' scenario" },
+  ];
+
+  const META = {
+    revenue: 16.8,
+    revenueLabel: "€16.8B",
+    revenueYear: "FY2025",
+    envelope: 670,
+    initiatives: 24,
+    plays: 4,
+    horizon: "2026 → 2034",
+    quote:
+      "By 2034, will Decathlon still be the company whose shoes \u201Cchime twice\u201D — or one whose shoes chime once, like everyone else's?",
+    credits: "EMBA Group 2 · IE Business School · April 2026 · Faiysal · Kimie · Pauline · Salem · Isabel · Sultan",
+  };
+
+  return { PLAYS, PROJECTS, SCENARIOS, HORIZON_BUDGETS, STATUS_COUNTS, SOURCES, META };
+})();
+  </script>
+
+  <script type="text/babel">
+
+// tweaks-panel.jsx
+// Reusable Tweaks shell + form-control helpers.
+//
+// Owns the host protocol (listens for __activate_edit_mode / __deactivate_edit_mode,
+// posts __edit_mode_available / __edit_mode_set_keys / __edit_mode_dismissed) so
+// individual prototypes don't re-roll it. Ships a consistent set of controls so you
+// don't hand-draw <input type="range">, segmented radios, steppers, etc.
+//
+// Usage (in an HTML file that loads React + Babel):
+//
+//   const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+//     "primaryColor": "#D97757",
+//     "fontSize": 16,
+//     "density": "regular",
+//     "dark": false
+//   }/*EDITMODE-END*/;
+//
+//   function App() {
+//     const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+//     return (
+//       <div style={{ fontSize: t.fontSize, color: t.primaryColor }}>
+//         Hello
+//         <TweaksPanel>
+//           <TweakSection label="Typography" />
+//           <TweakSlider label="Font size" value={t.fontSize} min={10} max={32} unit="px"
+//                        onChange={(v) => setTweak('fontSize', v)} />
+//           <TweakRadio  label="Density" value={t.density}
+//                        options={['compact', 'regular', 'comfy']}
+//                        onChange={(v) => setTweak('density', v)} />
+//           <TweakSection label="Theme" />
+//           <TweakColor  label="Primary" value={t.primaryColor}
+//                        onChange={(v) => setTweak('primaryColor', v)} />
+//           <TweakToggle label="Dark mode" value={t.dark}
+//                        onChange={(v) => setTweak('dark', v)} />
+//         </TweaksPanel>
+//       </div>
+//     );
+//   }
+//
+// ─────────────────────────────────────────────────────────────────────────────
+
+const __TWEAKS_STYLE = `
+  .twk-panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:280px;
+    max-height:calc(100vh - 32px);display:flex;flex-direction:column;
+    background:rgba(250,249,247,.78);color:#29261b;
+    -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
+    border:.5px solid rgba(255,255,255,.6);border-radius:14px;
+    box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 12px 40px rgba(0,0,0,.18);
+    font:11.5px/1.4 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow:hidden}
+  .twk-hd{display:flex;align-items:center;justify-content:space-between;
+    padding:10px 8px 10px 14px;cursor:move;user-select:none}
+  .twk-hd b{font-size:12px;font-weight:600;letter-spacing:.01em}
+  .twk-x{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.55);
+    width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}
+  .twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}
+  .twk-body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:10px;
+    overflow-y:auto;overflow-x:hidden;min-height:0;
+    scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.15) transparent}
+  .twk-body::-webkit-scrollbar{width:8px}
+  .twk-body::-webkit-scrollbar-track{background:transparent;margin:2px}
+  .twk-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:4px;
+    border:2px solid transparent;background-clip:content-box}
+  .twk-body::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.25);
+    border:2px solid transparent;background-clip:content-box}
+  .twk-row{display:flex;flex-direction:column;gap:5px}
+  .twk-row-h{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+  .twk-lbl{display:flex;justify-content:space-between;align-items:baseline;
+    color:rgba(41,38,27,.72)}
+  .twk-lbl>span:first-child{font-weight:500}
+  .twk-val{color:rgba(41,38,27,.5);font-variant-numeric:tabular-nums}
+
+  .twk-sect{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:rgba(41,38,27,.45);padding:10px 0 0}
+  .twk-sect:first-child{padding-top:0}
+
+  .twk-field{appearance:none;width:100%;height:26px;padding:0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;
+    background:rgba(255,255,255,.6);color:inherit;font:inherit;outline:none}
+  .twk-field:focus{border-color:rgba(0,0,0,.25);background:rgba(255,255,255,.85)}
+  select.twk-field{padding-right:22px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='rgba(0,0,0,.5)' d='M0 0h10L5 6z'/></svg>");
+    background-repeat:no-repeat;background-position:right 8px center}
+
+  .twk-slider{appearance:none;-webkit-appearance:none;width:100%;height:4px;margin:6px 0;
+    border-radius:999px;background:rgba(0,0,0,.12);outline:none}
+  .twk-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+    width:14px;height:14px;border-radius:50%;background:#fff;
+    border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+  .twk-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;
+    background:#fff;border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+
+  .twk-seg{position:relative;display:flex;padding:2px;border-radius:8px;
+    background:rgba(0,0,0,.06);user-select:none}
+  .twk-seg-thumb{position:absolute;top:2px;bottom:2px;border-radius:6px;
+    background:rgba(255,255,255,.9);box-shadow:0 1px 2px rgba(0,0,0,.12);
+    transition:left .15s cubic-bezier(.3,.7,.4,1),width .15s}
+  .twk-seg.dragging .twk-seg-thumb{transition:none}
+  .twk-seg button{appearance:none;position:relative;z-index:1;flex:1;border:0;
+    background:transparent;color:inherit;font:inherit;font-weight:500;min-height:22px;
+    border-radius:6px;cursor:default;padding:4px 6px;line-height:1.2;
+    overflow-wrap:anywhere}
+
+  .twk-toggle{position:relative;width:32px;height:18px;border:0;border-radius:999px;
+    background:rgba(0,0,0,.15);transition:background .15s;cursor:default;padding:0}
+  .twk-toggle[data-on="1"]{background:#34c759}
+  .twk-toggle i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+  .twk-toggle[data-on="1"] i{transform:translateX(14px)}
+
+  .twk-num{display:flex;align-items:center;height:26px;padding:0 0 0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;background:rgba(255,255,255,.6)}
+  .twk-num-lbl{font-weight:500;color:rgba(41,38,27,.6);cursor:ew-resize;
+    user-select:none;padding-right:8px}
+  .twk-num input{flex:1;min-width:0;height:100%;border:0;background:transparent;
+    font:inherit;font-variant-numeric:tabular-nums;text-align:right;padding:0 8px 0 0;
+    outline:none;color:inherit;-moz-appearance:textfield}
+  .twk-num input::-webkit-inner-spin-button,.twk-num input::-webkit-outer-spin-button{
+    -webkit-appearance:none;margin:0}
+  .twk-num-unit{padding-right:8px;color:rgba(41,38,27,.45)}
+
+  .twk-btn{appearance:none;height:26px;padding:0 12px;border:0;border-radius:7px;
+    background:rgba(0,0,0,.78);color:#fff;font:inherit;font-weight:500;cursor:default}
+  .twk-btn:hover{background:rgba(0,0,0,.88)}
+  .twk-btn.secondary{background:rgba(0,0,0,.06);color:inherit}
+  .twk-btn.secondary:hover{background:rgba(0,0,0,.1)}
+
+  .twk-swatch{appearance:none;-webkit-appearance:none;width:56px;height:22px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:6px;padding:0;cursor:default;
+    background:transparent;flex-shrink:0}
+  .twk-swatch::-webkit-color-swatch-wrapper{padding:0}
+  .twk-swatch::-webkit-color-swatch{border:0;border-radius:5.5px}
+  .twk-swatch::-moz-color-swatch{border:0;border-radius:5.5px}
+`;
+
+// ── useTweaks ───────────────────────────────────────────────────────────────
+// Single source of truth for tweak values. setTweak persists via the host
+// (__edit_mode_set_keys → host rewrites the EDITMODE block on disk).
+function useTweaks(defaults) {
+  const [values, setValues] = React.useState(defaults);
+  // Accepts either setTweak('key', value) or setTweak({ key: value, ... }) so a
+  // useState-style call doesn't write a "[object Object]" key into the persisted
+  // JSON block.
+  const setTweak = React.useCallback((keyOrEdits, val) => {
+    const edits = typeof keyOrEdits === 'object' && keyOrEdits !== null
+      ? keyOrEdits : { [keyOrEdits]: val };
+    setValues((prev) => ({ ...prev, ...edits }));
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*');
+  }, []);
+  return [values, setTweak];
+}
+
+// ── TweaksPanel ─────────────────────────────────────────────────────────────
+// Floating shell. Registers the protocol listener BEFORE announcing
+// availability — if the announce ran first, the host's activate could land
+// before our handler exists and the toolbar toggle would silently no-op.
+// The close button posts __edit_mode_dismissed so the host's toolbar toggle
+// flips off in lockstep; the host echoes __deactivate_edit_mode back which
+// is what actually hides the panel.
+function TweaksPanel({ title = 'Tweaks', children }) {
+  const [open, setOpen] = React.useState(false);
+  const dragRef = React.useRef(null);
+  const offsetRef = React.useRef({ x: 16, y: 16 });
+  const PAD = 16;
+
+  const clampToViewport = React.useCallback(() => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const w = panel.offsetWidth, h = panel.offsetHeight;
+    const maxRight = Math.max(PAD, window.innerWidth - w - PAD);
+    const maxBottom = Math.max(PAD, window.innerHeight - h - PAD);
+    offsetRef.current = {
+      x: Math.min(maxRight, Math.max(PAD, offsetRef.current.x)),
+      y: Math.min(maxBottom, Math.max(PAD, offsetRef.current.y)),
+    };
+    panel.style.right = offsetRef.current.x + 'px';
+    panel.style.bottom = offsetRef.current.y + 'px';
+  }, []);
+
+  React.useEffect(() => {
+    if (!open) return;
+    clampToViewport();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', clampToViewport);
+      return () => window.removeEventListener('resize', clampToViewport);
+    }
+    const ro = new ResizeObserver(clampToViewport);
+    ro.observe(document.documentElement);
+    return () => ro.disconnect();
+  }, [open, clampToViewport]);
+
+  React.useEffect(() => {
+    const onMsg = (e) => {
+      const t = e?.data?.type;
+      if (t === '__activate_edit_mode') setOpen(true);
+      else if (t === '__deactivate_edit_mode') setOpen(false);
+    };
+    window.addEventListener('message', onMsg);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
+
+  const dismiss = () => {
+    setOpen(false);
+    window.parent.postMessage({ type: '__edit_mode_dismissed' }, '*');
+  };
+
+  const onDragStart = (e) => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const r = panel.getBoundingClientRect();
+    const sx = e.clientX, sy = e.clientY;
+    const startRight = window.innerWidth - r.right;
+    const startBottom = window.innerHeight - r.bottom;
+    const move = (ev) => {
+      offsetRef.current = {
+        x: startRight - (ev.clientX - sx),
+        y: startBottom - (ev.clientY - sy),
+      };
+      clampToViewport();
+    };
+    const up = () => {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', up);
+    };
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+  };
+
+  if (!open) return null;
+  return (
+    <>
+      <style>{__TWEAKS_STYLE}</style>
+      <div ref={dragRef} className="twk-panel"
+           style={{ right: offsetRef.current.x, bottom: offsetRef.current.y }}>
+        <div className="twk-hd" onMouseDown={onDragStart}>
+          <b>{title}</b>
+          <button className="twk-x" aria-label="Close tweaks"
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onClick={dismiss}>✕</button>
+        </div>
+        <div className="twk-body">{children}</div>
+      </div>
+    </>
+  );
+}
+
+// ── Layout helpers ──────────────────────────────────────────────────────────
+
+function TweakSection({ label, children }) {
+  return (
+    <>
+      <div className="twk-sect">{label}</div>
+      {children}
+    </>
+  );
+}
+
+function TweakRow({ label, value, children, inline = false }) {
+  return (
+    <div className={inline ? 'twk-row twk-row-h' : 'twk-row'}>
+      <div className="twk-lbl">
+        <span>{label}</span>
+        {value != null && <span className="twk-val">{value}</span>}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+// ── Controls ────────────────────────────────────────────────────────────────
+
+function TweakSlider({ label, value, min = 0, max = 100, step = 1, unit = '', onChange }) {
+  return (
+    <TweakRow label={label} value={`${value}${unit}`}>
+      <input type="range" className="twk-slider" min={min} max={max} step={step}
+             value={value} onChange={(e) => onChange(Number(e.target.value))} />
+    </TweakRow>
+  );
+}
+
+function TweakToggle({ label, value, onChange }) {
+  return (
+    <div className="twk-row twk-row-h">
+      <div className="twk-lbl"><span>{label}</span></div>
+      <button type="button" className="twk-toggle" data-on={value ? '1' : '0'}
+              role="switch" aria-checked={!!value}
+              onClick={() => onChange(!value)}><i /></button>
+    </div>
+  );
+}
+
+function TweakRadio({ label, value, options, onChange }) {
+  const trackRef = React.useRef(null);
+  const [dragging, setDragging] = React.useState(false);
+  const opts = options.map((o) => (typeof o === 'object' ? o : { value: o, label: o }));
+  const idx = Math.max(0, opts.findIndex((o) => o.value === value));
+  const n = opts.length;
+
+  // The active value is read by pointer-move handlers attached for the lifetime
+  // of a drag — ref it so a stale closure doesn't fire onChange for every move.
+  const valueRef = React.useRef(value);
+  valueRef.current = value;
+
+  const segAt = (clientX) => {
+    const r = trackRef.current.getBoundingClientRect();
+    const inner = r.width - 4;
+    const i = Math.floor(((clientX - r.left - 2) / inner) * n);
+    return opts[Math.max(0, Math.min(n - 1, i))].value;
+  };
+
+  const onPointerDown = (e) => {
+    setDragging(true);
+    const v0 = segAt(e.clientX);
+    if (v0 !== valueRef.current) onChange(v0);
+    const move = (ev) => {
+      if (!trackRef.current) return;
+      const v = segAt(ev.clientX);
+      if (v !== valueRef.current) onChange(v);
+    };
+    const up = () => {
+      setDragging(false);
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+
+  return (
+    <TweakRow label={label}>
+      <div ref={trackRef} role="radiogroup" onPointerDown={onPointerDown}
+           className={dragging ? 'twk-seg dragging' : 'twk-seg'}>
+        <div className="twk-seg-thumb"
+             style={{ left: `calc(2px + ${idx} * (100% - 4px) / ${n})`,
+                      width: `calc((100% - 4px) / ${n})` }} />
+        {opts.map((o) => (
+          <button key={o.value} type="button" role="radio" aria-checked={o.value === value}>
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </TweakRow>
+  );
+}
+
+function TweakSelect({ label, value, options, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <select className="twk-field" value={value} onChange={(e) => onChange(e.target.value)}>
+        {options.map((o) => {
+          const v = typeof o === 'object' ? o.value : o;
+          const l = typeof o === 'object' ? o.label : o;
+          return <option key={v} value={v}>{l}</option>;
+        })}
+      </select>
+    </TweakRow>
+  );
+}
+
+function TweakText({ label, value, placeholder, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <input className="twk-field" type="text" value={value} placeholder={placeholder}
+             onChange={(e) => onChange(e.target.value)} />
+    </TweakRow>
+  );
+}
+
+function TweakNumber({ label, value, min, max, step = 1, unit = '', onChange }) {
+  const clamp = (n) => {
+    if (min != null && n < min) return min;
+    if (max != null && n > max) return max;
+    return n;
+  };
+  const startRef = React.useRef({ x: 0, val: 0 });
+  const onScrubStart = (e) => {
+    e.preventDefault();
+    startRef.current = { x: e.clientX, val: value };
+    const decimals = (String(step).split('.')[1] || '').length;
+    const move = (ev) => {
+      const dx = ev.clientX - startRef.current.x;
+      const raw = startRef.current.val + dx * step;
+      const snapped = Math.round(raw / step) * step;
+      onChange(clamp(Number(snapped.toFixed(decimals))));
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+  return (
+    <div className="twk-num">
+      <span className="twk-num-lbl" onPointerDown={onScrubStart}>{label}</span>
+      <input type="number" value={value} min={min} max={max} step={step}
+             onChange={(e) => onChange(clamp(Number(e.target.value)))} />
+      {unit && <span className="twk-num-unit">{unit}</span>}
+    </div>
+  );
+}
+
+function TweakColor({ label, value, onChange }) {
+  return (
+    <div className="twk-row twk-row-h">
+      <div className="twk-lbl"><span>{label}</span></div>
+      <input type="color" className="twk-swatch" value={value}
+             onChange={(e) => onChange(e.target.value)} />
+    </div>
+  );
+}
+
+function TweakButton({ label, onClick, secondary = false }) {
+  return (
+    <button type="button" className={secondary ? 'twk-btn secondary' : 'twk-btn'}
+            onClick={onClick}>{label}</button>
+  );
+}
+
+Object.assign(window, {
+  useTweaks, TweaksPanel, TweakSection, TweakRow,
+  TweakSlider, TweakToggle, TweakRadio, TweakSelect,
+  TweakText, TweakNumber, TweakColor, TweakButton,
+});
+  </script>
+
+  <script type="text/babel">
+// Helpers + small UI primitives shared across components
+(function () {
+  const { useState, useMemo, useEffect, useRef, useCallback } = React;
+
+  // ---- Color resolver ----
+  window.playColor = (id) => `var(--p-${id})`;
+  window.playColorSoft = (id) => `var(--p-${id}-soft)`;
+
+  window.fmtMoney = (m) => `€${m}M`;
+  window.fmtMoneyB = (m) => (m >= 1000 ? `€${(m/1000).toFixed(2)}B` : `€${m}M`);
+  window.fmtPct = (n) => `${n.toFixed(1)}%`;
+
+  // Compact M / B
+  window.fmtBig = (m) => {
+    if (m >= 1000) return `€${(m/1000).toFixed(1)}B`;
+    return `€${Math.round(m)}M`;
+  };
+
+  // status -> color var
+  window.statusColor = (s) => {
+    switch (s) {
+      case "Done": return "var(--status-done)";
+      case "In progress": return "var(--status-progress)";
+      case "Approved": return "var(--status-approved)";
+      case "To be approved": return "var(--status-tba)";
+      case "Team to be assigned": return "var(--status-team)";
+      case "Declined": return "var(--status-declined)";
+      default: return "var(--fg-3)";
+    }
+  };
+
+  // Smooth count-up for numbers
+  window.useCountUp = (target, ms = 400) => {
+    const [v, setV] = useState(target);
+    const prev = useRef(target);
+    useEffect(() => {
+      const from = prev.current;
+      const to = target;
+      const start = performance.now();
+      let raf;
+      const tick = (now) => {
+        const t = Math.min(1, (now - start) / ms);
+        const eased = 1 - Math.pow(1 - t, 3);
+        setV(from + (to - from) * eased);
+        if (t < 1) raf = requestAnimationFrame(tick);
+        else prev.current = to;
+      };
+      raf = requestAnimationFrame(tick);
+      return () => cancelAnimationFrame(raf);
+    }, [target]);
+    return v;
+  };
+
+  // Sparkline svg
+  window.Sparkline = function Sparkline({ values, color = "var(--accent)", height = 28 }) {
+    const w = 200;
+    const h = height;
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const range = max - min || 1;
+    const step = w / (values.length - 1);
+    const pts = values.map((v, i) => `${i * step},${h - ((v - min) / range) * (h - 4) - 2}`).join(" ");
+    return (
+      <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" style={{ width: "100%", height }}>
+        <polyline points={pts} fill="none" stroke={color} strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+      </svg>
+    );
+  };
+
+  // Mini icon helpers
+  window.IconSearch = () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-3.5-3.5" />
+    </svg>
+  );
+  window.IconPlay = () => (
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><polygon points="2,1 9,5 2,9" /></svg>
+  );
+  window.IconPause = () => (
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><rect x="2" y="1" width="2" height="8" /><rect x="6" y="1" width="2" height="8" /></svg>
+  );
+  window.IconClose = () => (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <line x1="2" y1="2" x2="12" y2="12" />
+      <line x1="12" y1="2" x2="2" y2="12" />
+    </svg>
+  );
+
+  // Cover background rays — abstract sport-coded geometric pattern
+  window.CoverRays = function CoverRays() {
+    return (
+      <svg className="cover-rays" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="ray" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stopColor="var(--accent)" stopOpacity="0" />
+            <stop offset="1" stopColor="var(--accent)" stopOpacity="1" />
+          </linearGradient>
+        </defs>
+        {Array.from({ length: 14 }).map((_, i) => (
+          <line key={i}
+            x1="800" y1={i * 60 - 200}
+            x2="-200" y2={i * 60 + 600}
+            stroke="url(#ray)" strokeWidth="1" />
+        ))}
+        <circle cx="640" cy="180" r="240" fill="none" stroke="var(--p-platform)" strokeWidth="1" opacity="0.4" />
+        <circle cx="640" cy="180" r="160" fill="none" stroke="var(--p-platform)" strokeWidth="1" opacity="0.3" />
+        <circle cx="640" cy="180" r="80" fill="none" stroke="var(--p-platform)" strokeWidth="1" opacity="0.5" />
+      </svg>
+    );
+  };
+
+  // Centralized scenario math: scaling factor relative to plan envelope
+  window.scenarioScale = (scenario, scenarios) => {
+    const plan = scenarios.plan.total;
+    return scenarios[scenario].total / plan;
+  };
+})();
+  </script>
+
+  <script type="text/babel">
+// Sidebar + Cover + Topbar + KPI components
+(function () {
+  const { useState, useEffect, useRef } = React;
+  const { PLAYS, META, SCENARIOS } = window.PORTFOLIO_DATA;
+
+  // ============ SIDEBAR ============
+  window.Sidebar = function Sidebar({ active, scenario, setScenario, onNav }) {
+    const sections = [
+    { id: "cover", num: "00", label: "Cover" },
+    { id: "executive", num: "01", label: "Executive View" },
+    { id: "plays", num: "02", label: "Strategic Plays" },
+    { id: "projects", num: "03", label: "Project List" },
+    { id: "scenario", num: "04", label: "Scenario Stress" },
+    { id: "timeline", num: "05", label: "Timeline" }];
+
+    const sc = SCENARIOS[scenario];
+    return (
+      <aside className="sidebar">
+        <div className="sb-brand">
+          <div className="sb-mark">
+            <div className="sb-mark-glyph">
+              {/* abstract chevron, original mark */}
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M2 11 L8 4 L14 11" stroke="#0E0F12" strokeWidth="2.5" strokeLinecap="square" />
+              </svg>
+            </div>
+            <div className="sb-mark-text">
+              Innovation Portfolio
+              <small style={{ fontFamily: "Inter", color: "rgb(8, 168, 22)" }}>The Sport Commons · 2026 → 2034</small>
+            </div>
+          </div>
+        </div>
+
+        <div className="sb-section">
+          <div className="sb-section-label">Workbook</div>
+          {sections.map((s) =>
+          <button key={s.id} className="sb-link"
+          data-active={active === s.id}
+          onClick={() => onNav(s.id)}>
+              <span className="num">{s.num}</span>
+              <span>{s.label}</span>
+            </button>
+          )}
+        </div>
+
+        <div className="sb-scenario">
+          <div className="sb-scenario-row">
+            <span className="sb-scenario-key">Budget</span>
+            <span className="sb-scenario-key">{sc.label}</span>
+          </div>
+          <div className="sb-scenario-val">€{sc.total}M</div>
+          <div className="sb-scenario-segs">
+            {Object.keys(SCENARIOS).map((k) =>
+            <button key={k}
+            className="sb-scenario-seg"
+            data-on={scenario === k}
+            onClick={() => setScenario(k)}>
+                {k.toUpperCase()}
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div className="sb-foot">
+          <div><strong style={{ fontFamily: "Inter" }}>EMBA · A1-B · IE Business School</strong></div>
+          <div style={{ fontFamily: "Inter" }}>April 2026</div>
+          <div style={{ marginTop: 8, fontSize: 9, lineHeight: 1.7, fontFamily: "Inter" }}>
+            Faiysal · Kimie · Pauline<br />Salem · Isabel · Sultan
+          </div>
+        </div>
+      </aside>);
+
+  };
+
+  // ============ TOPBAR ============
+  window.Topbar = function Topbar({ scenario, activeSection, onNav }) {
+    const sc = SCENARIOS[scenario];
+    const sections = [
+      { id: "cover", num: "00", label: "Cover" },
+      { id: "executive", num: "01", label: "Executive" },
+      { id: "plays", num: "02", label: "Plays" },
+      { id: "projects", num: "03", label: "Projects" },
+      { id: "scenario", num: "04", label: "Scenario" },
+      { id: "timeline", num: "05", label: "Timeline" },
+    ];
+    const idx = Math.max(0, sections.findIndex((s) => s.id === activeSection));
+    const cur = sections[idx];
+    const pct = ((idx + 1) / sections.length) * 100;
+    const scenarioColor =
+      scenario === "conservative" ? "var(--p-platform)" :
+      scenario === "aggressive" ? "var(--p-health)" : "var(--p-compliance)";
+    return (
+      <div className="topbar">
+        <span className="topbar-progress">
+          <span style={{ color: "rgba(255,255,255,0.4)" }}>{cur.num}</span>
+          <span className="topbar-section-label" style={{ marginLeft: 6 }}>{cur.label.toUpperCase()}</span>
+          <span className="topbar-progress-bar"><span style={{ width: `${pct}%` }} /></span>
+          <span style={{ color: "rgba(255,255,255,0.4)" }}>{idx + 1}/{sections.length}</span>
+        </span>
+        <span className="topbar-scenario">
+          <span className="swatch" style={{ background: scenarioColor }} />
+          <span>SCENARIO · <b>{sc.label.toUpperCase()}</b> · €{sc.total}M · {sc.pct}%</span>
+        </span>
+      </div>);
+  };
+
+  // ============ COVER ============
+  window.Cover = function Cover({ onNav, narrative }) {
+    return (
+      <section id="cover" className="cover">
+        <div className="cover-grid">
+          <div className="cover-left">
+            <div>
+              <div className="cover-eyebrow">
+                <span className="bar" />
+                Decathlon · Innovation Portfolio
+              </div>
+              <h1 className="cover-title">
+                The Sport<br />Commons<br /><em>2026→2034</em>
+              </h1>
+              {narrative &&
+              <p className="cover-sub">
+                  €670M budget across 24 initiatives and 4 strategic plays — an 8-year transformation arc that turns vertical integration, EU regulation, and habit-loop economics into a defensible moat.
+                </p>
+              }
+            </div>
+            <div className="cover-stats">
+              <div className="cover-stat">
+                <div className="cover-stat-key">Budget</div>
+                <div className="cover-stat-val">€670M</div>
+                <div className="cover-stat-note">4% of FY2025 revenue (€16.8B)</div>
+              </div>
+              <div className="cover-stat">
+                <div className="cover-stat-key">Initiatives</div>
+                <div className="cover-stat-val">24</div>
+                <div className="cover-stat-note">7 markets · 4 strategic plays</div>
+              </div>
+              <div className="cover-stat">
+                <div className="cover-stat-key">Horizon</div>
+                <div className="cover-stat-val">2034</div>
+                <div className="cover-stat-note">8-year transformation arc</div>
+              </div>
+            </div>
+          </div>
+          <div className="cover-right">
+            <CoverRays />
+            <div className="cover-quote">
+              <span className="mark">“</span>
+              By 2034, will Decathlon still be the company whose shoes <em>chime twice</em> — or one whose shoes chime once, like everyone else's?
+              <div className="cover-quote-attrib">— THE STRATEGIC QUESTION</div>
+            </div>
+            <div className="cover-plays">
+              {PLAYS.map((p) =>
+              <button key={p.id} className="cover-play"
+              style={{ "--c": playColor(p.id) }}
+              onClick={() => onNav("plays")}>
+                  <span className="num">{p.num}</span>
+                  <span className="nm" style={{ color: "rgb(228, 234, 14)" }}>{p.name}</span>
+                  <span className="bd">€{p.budget}M</span>
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>);
+
+  };
+})();  </script>
+
+  <script type="text/babel">
+// Executive View: KPI row, allocation, horizon, status, top 5, hero bubble chart
+(function () {
+  const { useState, useMemo } = React;
+  const { PLAYS, PROJECTS, SCENARIOS, HORIZON_BUDGETS, STATUS_COUNTS, META } = window.PORTFOLIO_DATA;
+
+  // ===== KPI Row =====
+  window.KPIRow = function KPIRow({ scenario }) {
+    const sc = SCENARIOS[scenario];
+    const scale = sc.total / SCENARIOS.plan.total;
+    const kpis = [
+    { k: "Budget", v: `€${sc.total}M`, note: `${sc.pct}% of FY2025 revenue (€16.8B)`, spark: [420, 480, 530, 590, 620, 670, sc.total] },
+    { k: "Initiatives", v: "24", note: "Live count from Project List", spark: [8, 12, 16, 20, 22, 24, 24] },
+    { k: "Allocated", v: `€${Math.round(500 * scale)}M`, note: `€M committed across 4 plays`, spark: [120, 200, 280, 360, 440, 500, Math.round(500 * scale)] },
+    { k: "Prioritized", v: `€${Math.round(495 * scale)}M`, note: "23 of 24 flagged as priority", spark: [110, 195, 275, 355, 435, 495, Math.round(495 * scale)] }];
+
+    const accents = ["var(--p-platform)", "var(--p-habit)", "var(--p-compliance)", "var(--p-health)"];
+    return (
+      <div className="kpi-row">
+        {kpis.map((k, i) =>
+        <div key={k.k} className="kpi">
+            <div className="kpi-key">{k.k}</div>
+            <div className="kpi-val">
+              {k.v}
+            </div>
+            <div className="kpi-note">{k.note}</div>
+            <div className="kpi-spark"><Sparkline values={k.spark} color={accents[i]} /></div>
+          </div>
+        )}
+      </div>);
+
+  };
+
+  // ===== Allocation by Play =====
+  window.AllocationPanel = function AllocationPanel({ scenario, onPlay }) {
+    const sc = SCENARIOS[scenario];
+    const scale = sc.total / SCENARIOS.plan.total;
+    const max = Math.max(...PLAYS.map((p) => p.budget));
+    return (
+      <div className="panel">
+        <div className="panel-head">
+          <h3 className="panel-title">Allocation by Strategic Play</h3>
+          <span className="panel-meta">€M · 4 plays</span>
+        </div>
+        <div className="panel-body">
+          <div className="alloc-list">
+            {PLAYS.map((p) => {
+              const scaledBudget = Math.round(p.budget * scale);
+              return (
+                <div key={p.id} className="alloc-row" style={{ "--c": playColor(p.id) }} onClick={() => onPlay && onPlay(p.id)}>
+                  <span className="alloc-num">{p.num}</span>
+                  <div className="alloc-content">
+                    <div className="alloc-name">
+                      <span>{p.name}</span>
+                      <span className="pct">{p.pct.toFixed(1)}% · {p.projects} projects</span>
+                    </div>
+                    <div className="alloc-bar">
+                      <div className="alloc-fill" style={{ width: `${p.budget / max * 100}%` }} />
+                    </div>
+                  </div>
+                  <span className="alloc-budget">€{scaledBudget}M</span>
+                </div>);
+
+            })}
+          </div>
+        </div>
+      </div>);
+
+  };
+
+  // ===== Horizon Panel =====
+  window.HorizonPanel = function HorizonPanel({ scenario }) {
+    const sc = SCENARIOS[scenario];
+    const scale = sc.total / SCENARIOS.plan.total;
+    const rows = [
+    { h: "H1", label: "1 Year", ...HORIZON_BUDGETS.H1 },
+    { h: "H2", label: "2-3 Years", ...HORIZON_BUDGETS.H2 },
+    { h: "H3", label: "4+ Years", ...HORIZON_BUDGETS.H3 }];
+
+    const max = 350;
+    return (
+      <div className="panel">
+        <div className="panel-head">
+          <h3 className="panel-title">Budget by Horizon · Target vs. Listed</h3>
+          <span className="panel-meta">€M · variance</span>
+        </div>
+        <div className="panel-body">
+          {rows.map((r) => {
+            const tgt = Math.round(r.target * scale);
+            const lst = Math.round(r.listed * scale);
+            const variance = lst - tgt;
+            return (
+              <div key={r.h} className="horizon-row">
+                <div className="horizon-h">{r.h}<small>{r.label}</small></div>
+                <div className="horizon-bars">
+                  <div className="horizon-bar target">
+                    <div className="fill" style={{ width: `${tgt / max * scale * 100}%` }} />
+                    <span className="label">TARGET €{tgt}M</span>
+                  </div>
+                  <div className="horizon-bar listed">
+                    <div className="fill" style={{ width: `${lst / max * scale * 100}%` }} />
+                    <span className="label">LISTED €{lst}M</span>
+                  </div>
+                </div>
+                <div className={`horizon-variance ${variance >= 0 ? "pos" : "neg"}`}>
+                  {variance >= 0 ? "+" : "−"}€{Math.abs(variance)}M
+                </div>
+              </div>);
+
+          })}
+        </div>
+      </div>);
+
+  };
+
+  // ===== Bubble Chart (score vs ROI, sized by budget, colored by play) =====
+  window.BubbleChart = function BubbleChart({ onSelect }) {
+    const [hover, setHover] = useState(null);
+    // x = ROI, y = Score, size = budget
+    const xMin = 0,xMax = 28;
+    const yMin = 2.5,yMax = 7.5;
+    const W = 800,H = 500;
+    const padL = 50,padR = 24,padT = 24,padB = 50;
+    const innerW = W - padL - padR;
+    const innerH = H - padT - padB;
+    const sx = (v) => padL + (v - xMin) / (xMax - xMin) * innerW;
+    const sy = (v) => padT + (1 - (v - yMin) / (yMax - yMin)) * innerH;
+    const sr = (b) => 6 + Math.sqrt(b) * 3.2;
+
+    const xTicks = [0, 5, 10, 15, 20, 25];
+    const yTicks = [3, 4, 5, 6, 7];
+
+    return (
+      <div className="bubble-wrap">
+        <svg className="bubble-svg" viewBox={`0 0 ${W} ${H}`}>
+          {/* grid */}
+          <g className="bubble-grid">
+            {xTicks.map((t) =>
+            <line key={"x" + t} x1={sx(t)} y1={padT} x2={sx(t)} y2={H - padB} />
+            )}
+            {yTicks.map((t) =>
+            <line key={"y" + t} x1={padL} y1={sy(t)} x2={W - padR} y2={sy(t)} />
+            )}
+            {/* quadrant divider at score=5, roi=15 */}
+            <line className="q" x1={sx(15)} y1={padT} x2={sx(15)} y2={H - padB} />
+            <line className="q" x1={padL} y1={sy(5)} x2={W - padR} y2={sy(5)} />
+          </g>
+
+          {/* quadrant labels */}
+          <text className="bubble-quad-label" x={sx(15) + 8} y={padT + 14}>HIGH SCORE · HIGH ROI · PROTECT</text>
+          <text className="bubble-quad-label" x={padL + 8} y={padT + 14}>HIGH SCORE · LOWER ROI · STRATEGIC</text>
+          <text className="bubble-quad-label" x={sx(15) + 8} y={H - padB - 6}>LOWER SCORE · HIGH ROI · OPPORTUNISTIC</text>
+          <text className="bubble-quad-label" x={padL + 8} y={H - padB - 6}>LOWER SCORE · LOWER ROI · DEFER</text>
+
+          {/* axis ticks */}
+          {xTicks.map((t) =>
+          <text key={"xt" + t} className="bubble-tick" x={sx(t)} y={H - padB + 16} textAnchor="middle">{t}%</text>
+          )}
+          {yTicks.map((t) =>
+          <text key={"yt" + t} className="bubble-tick" x={padL - 8} y={sy(t) + 4} textAnchor="end">{t.toFixed(1)}</text>
+          )}
+
+          {/* axis labels */}
+          <text className="bubble-axis-label" x={W / 2} y={H - 8} textAnchor="middle">PROJECTED ROI →</text>
+          <text className="bubble-axis-label" x={-H / 2} y={14} textAnchor="middle" transform="rotate(-90)">PROJECT SCORE →</text>
+
+          {/* bubbles */}
+          {PROJECTS.map((p) => {
+            const isHover = hover === p.id;
+            return (
+              <g key={p.id}>
+                <circle className="bubble"
+                cx={sx(p.roi)} cy={sy(p.score)} r={sr(p.budget)}
+                fill={`var(--p-${p.play})`}
+                fillOpacity={isHover ? 0.95 : 0.55}
+                stroke={`var(--p-${p.play})`}
+                strokeWidth={1.5}
+                onMouseEnter={() => setHover(p.id)}
+                onMouseLeave={() => setHover(null)}
+                onClick={() => onSelect && onSelect(p.id)} />
+                
+                {(p.budget >= 25 || isHover) &&
+                <text className="bubble-label"
+                x={sx(p.roi)} y={sy(p.score) - sr(p.budget) - 4}
+                textAnchor="middle">#{p.id}</text>
+                }
+              </g>);
+
+          })}
+
+          {/* hover detail */}
+          {hover && (() => {
+            const p = PROJECTS.find((x) => x.id === hover);
+            const tx = Math.min(sx(p.roi) + sr(p.budget) + 8, W - 200);
+            const ty = Math.max(sy(p.score) - 60, padT + 8);
+            return (
+              <g pointerEvents="none">
+                <rect x={tx} y={ty} width="220" height="68" fill="var(--bg)" stroke="var(--line-2)" />
+                <text x={tx + 10} y={ty + 18} fill="var(--fg)" style={{ fontFamily: "Space Grotesk", fontSize: 12, fontWeight: 700 }}>
+                  #{p.id} · €{p.budget}M
+                </text>
+                <text x={tx + 10} y={ty + 34} fill="var(--fg-2)" style={{ fontFamily: "Inter", fontSize: 10 }}>
+                  {p.title.length > 32 ? p.title.slice(0, 32) + "…" : p.title}
+                </text>
+                <text x={tx + 10} y={ty + 52} fill={`var(--p-${p.play})`} style={{ fontFamily: "Inter", fontSize: 10, letterSpacing: "0.06em" }}>
+                  ROI {p.roi}% · SCORE {p.score} · {p.horizon}
+                </text>
+              </g>);
+
+          })()}
+        </svg>
+      </div>);
+
+  };
+
+  // ===== Status Heatmap =====
+  window.StatusPanel = function StatusPanel() {
+    const statuses = ["Approved", "In progress", "To be approved", "Team to be assigned", "Done", "Declined"];
+    // Build play × status matrix
+    const matrix = PLAYS.map((p) => {
+      const row = { play: p, total: 0, cells: {} };
+      statuses.forEach((st) => { row.cells[st] = 0; });
+      PROJECTS.filter((pr) => pr.play === p.id).forEach((pr) => {
+        if (row.cells[pr.status] != null) row.cells[pr.status]++;
+        row.total++;
+      });
+      return row;
+    });
+    const colTotals = statuses.map((st) => PROJECTS.filter((p) => p.status === st).length);
+    const max = Math.max(...matrix.flatMap((r) => Object.values(r.cells)));
+    return (
+      <div className="panel">
+        <div className="panel-head">
+          <h3 className="panel-title">Status × Play · Heatmap</h3>
+          <span className="panel-meta" style={{ fontFamily: "Inter" }}>24 initiatives</span>
+        </div>
+        <div className="panel-body panel-body--flush" style={{ padding: 14 }}>
+          <div className="heatmap">
+            <div className="hm-cell hm-corner">PLAY ↓ / STATUS →</div>
+            {statuses.map((st, i) => (
+              <div key={st} className="hm-cell hm-col-head">
+                <span>{st}</span>
+                <span className="ct">n={colTotals[i]}</span>
+              </div>
+            ))}
+            <div className="hm-cell hm-col-head hm-row-end" style={{ alignItems: "center", justifyContent: "center" }}>TOTAL</div>
+
+            {matrix.map((row) => (
+              <React.Fragment key={row.play.id}>
+                <div className="hm-cell hm-row-head" style={{ "--c": playColor(row.play.id) }}>
+                  {row.play.name}
+                </div>
+                {statuses.map((st) => {
+                  const v = row.cells[st];
+                  const intensity = max > 0 ? v / max : 0;
+                  return (
+                    <div key={st}
+                      className="hm-cell hm-data"
+                      data-zero={v === 0}
+                      style={{ "--c": playColor(row.play.id), "--intensity": intensity }}
+                      title={`${row.play.name} · ${st}: ${v}`}>
+                      {v}
+                    </div>
+                  );
+                })}
+                <div className="hm-cell hm-row-end">{row.total}</div>
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+      </div>);
+
+  };
+
+  // ===== Top 5 =====
+  window.Top5Panel = function Top5Panel({ onSelect }) {
+    const top = [...PROJECTS].sort((a, b) => b.score - a.score || b.budget - a.budget).slice(0, 5);
+    return (
+      <div className="panel">
+        <div className="panel-head">
+          <h3 className="panel-title">Top 5 · Ranked by Project Score</h3>
+          <span className="panel-meta" style={{ fontFamily: "Inter" }}>protected priorities</span>
+        </div>
+        <div className="panel-body">
+          <div className="top5">
+            {top.map((p, i) =>
+            <div key={p.id} className="top5-row"
+            style={{ "--c": playColor(p.play) }}
+            onClick={() => onSelect && onSelect(p.id)}>
+                <span className="top5-rank">{String(i + 1).padStart(2, "0")}</span>
+                <div className="top5-info">
+                  <div className="top5-title">{p.title}</div>
+                  <div className="top5-meta">#{String(p.id).padStart(2, "0")} · {PLAYS.find((x) => x.id === p.play).name.toUpperCase()} · {p.horizon}</div>
+                </div>
+                <span className="top5-score">{p.score.toFixed(2)}</span>
+                <span className="top5-budget">€{p.budget}M</span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>);
+
+  };
+
+  // ===== Executive Section wrapper =====
+  window.ExecutiveView = function ExecutiveView({ scenario, onSelect, onNavPlay, narrative }) {
+    return (
+      <section id="executive" className="section" data-tone="paper-warm">
+        <div className="section-head">
+          <div>
+            <div className="section-num">
+</div>
+            <h2 className="section-title">The Boardroom Dashboard</h2>
+            {narrative && <p className="section-sub">€670M budget · 4 strategic plays · 24 initiatives.</p>
+            }
+          </div>
+          <div className="section-side">
+            <b>SCENARIO</b><br />
+            {SCENARIOS[scenario].label.toUpperCase()} · {SCENARIOS[scenario].pct}%<br />
+            <b>SOURCE</b><br />FY24/25 · BCG · WORKSHOP II
+          </div>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap)" }}>
+          <KPIRow scenario={scenario} />
+
+          <div className="grid-12">
+            <div className="col-7">
+              <div className="panel" style={{ height: "100%" }}>
+                <div className="panel-head">
+                  <h3 className="panel-title">Portfolio Map · Score × ROI × Budget</h3>
+                  <span className="panel-meta">click any bubble · hover for detail</span>
+                </div>
+                <div className="panel-body panel-body--flush">
+                  <BubbleChart onSelect={onSelect} />
+                </div>
+              </div>
+            </div>
+            <div className="col-5" style={{ display: "flex", flexDirection: "column", gap: "var(--gap)" }}>
+              <AllocationPanel scenario={scenario} onPlay={onNavPlay} />
+              <HorizonPanel scenario={scenario} />
+            </div>
+          </div>
+
+          <div className="grid-2">
+            <StatusPanel />
+            <Top5Panel onSelect={onSelect} />
+          </div>
+        </div>
+      </section>);
+
+  };
+})();  </script>
+
+  <script type="text/babel">
+// Strategic Plays drill-down + Project List table + Project modal
+(function () {
+  const { useState, useMemo } = React;
+  const { PLAYS, PROJECTS, SCENARIOS } = window.PORTFOLIO_DATA;
+
+  // ===== Plays Section =====
+  window.PlaysSection = function PlaysSection({ scenario, active, setActive, onSelect, narrative }) {
+    const sc = SCENARIOS[scenario];
+    const scale = sc.total / SCENARIOS.plan.total;
+    return (
+      <section id="plays" className="section" data-tone="paper-bright">
+        <div className="section-head">
+          <div>
+            <div className="section-num">02 · STRATEGIC PLAYS</div>
+            <h2 className="section-title">Four bets, one budget.</h2>
+            {narrative &&
+            <p className="section-sub">Each play is a self-contained thesis. Click any card to drill into its six initiatives.</p>
+            }
+          </div>
+          <div className="section-side">
+            <b>4</b> plays · <b>24</b> projects<br />
+            <b>€{Math.round(sc.total * (500 / 672))}M</b> allocated of <b>€{sc.total}M</b><br />
+            scaled to {sc.label.toLowerCase()} scenario
+          </div>
+        </div>
+
+        <div className="plays-grid">
+          {PLAYS.map((p) =>
+          <div key={p.id} className="play-card"
+          data-active={active === p.id}
+          style={{ "--c": playColor(p.id) }}
+          onClick={() => setActive(active === p.id ? null : p.id)}>
+              <div className="play-card-head">
+                <div>
+                  <div className="play-card-num">{p.num} · PLAY</div>
+                  <h3 className="play-card-name">{p.name}</h3>
+                  <div className="play-card-tag">{p.tagline}</div>
+                </div>
+                <div className="play-card-mark">
+                  €{Math.round(p.budget * scale)}M
+                  <small style={{ fontFamily: "Inter" }}>{p.pct.toFixed(0)}% · {p.projects} PROJECTS</small>
+                </div>
+              </div>
+              <p className="play-card-thesis">{p.thesis}</p>
+              <div className="play-card-stats">
+                <div className="play-card-stat">
+                  <div className="play-card-stat-key">AVG ROI</div>
+                  <div className="play-card-stat-val">{p.avgRoi.toFixed(1)}%</div>
+                </div>
+                <div className="play-card-stat">
+                  <div className="play-card-stat-key">AVG SCORE</div>
+                  <div className="play-card-stat-val">{p.avgScore.toFixed(2)}</div>
+                </div>
+                <div className="play-card-stat">
+                  <div className="play-card-stat-key">PROJECTS</div>
+                  <div className="play-card-stat-val">{p.projects}</div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {active && <PlayDetail playId={active} onClose={() => setActive(null)} onSelect={onSelect} scenario={scenario} />}
+      </section>);
+
+  };
+
+  // ===== Drilldown =====
+  window.PlayDetail = function PlayDetail({ playId, onClose, onSelect, scenario }) {
+    const play = PLAYS.find((p) => p.id === playId);
+    const projects = PROJECTS.filter((p) => p.play === playId).sort((a, b) => b.score - a.score);
+    const sc = SCENARIOS[scenario];
+    const scale = sc.total / SCENARIOS.plan.total;
+    const totalBudget = projects.reduce((s, p) => s + p.budget * scale, 0);
+    return (
+      <div className="play-detail" style={{ "--c": playColor(playId) }}>
+        <div className="play-detail-head">
+          <div>
+            <div style={{ fontSize: 10, letterSpacing: "0.14em", color: `var(--p-${playId})`, fontWeight: 600, fontFamily: "Inter" }}>
+              {play.num} · DRILL-DOWN
+            </div>
+            <h3 className="play-detail-title">{play.name} · 6 initiatives · €{Math.round(totalBudget)}M</h3>
+          </div>
+          <button className="play-detail-close" onClick={onClose} style={{ fontFamily: "Inter" }}>CLOSE ✕</button>
+        </div>
+        <table className="tbl" style={{ border: 0 }}>
+          <thead>
+            <tr>
+              <th>#</th><th>Project</th><th>Budget</th><th>Horizon</th><th>Status</th><th>ROI</th><th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            {projects.map((p) =>
+            <tr key={p.id} onClick={() => onSelect(p.id)}>
+                <td className="id-cell">{String(p.id).padStart(2, "0")}</td>
+                <td>{p.title}</td>
+                <td className="num-cell">€{Math.round(p.budget * scale)}M</td>
+                <td><span className="horizon-tag">{p.horizon}</span></td>
+                <td><span className="status-tag" style={{ "--c": statusColor(p.status) }}><span className="dot" />{p.status}</span></td>
+                <td className="num-cell">{p.roi.toFixed(1)}%</td>
+                <td className="num-cell"><span className={`score-pill ${p.score >= 6 ? "hi" : "md"}`}>{p.score.toFixed(2)}</span></td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>);
+
+  };
+
+  // ===== Project List =====
+  window.ProjectList = function ProjectList({ scenario, onSelect, narrative }) {
+    const [search, setSearch] = useState("");
+    const [playFilter, setPlayFilter] = useState(new Set());
+    const [horizonFilter, setHorizonFilter] = useState(new Set());
+    const [coreOnly, setCoreOnly] = useState(false);
+    const [sortKey, setSortKey] = useState("score");
+    const [sortDir, setSortDir] = useState("desc");
+
+    const sc = SCENARIOS[scenario];
+    const scale = sc.total / SCENARIOS.plan.total;
+
+    const togglePlay = (id) => {
+      const s = new Set(playFilter);
+      s.has(id) ? s.delete(id) : s.add(id);
+      setPlayFilter(s);
+    };
+    const toggleHorizon = (h) => {
+      const s = new Set(horizonFilter);
+      s.has(h) ? s.delete(h) : s.add(h);
+      setHorizonFilter(s);
+    };
+
+    const handleSort = (k) => {
+      if (sortKey === k) setSortDir(sortDir === "asc" ? "desc" : "asc");else
+      {setSortKey(k);setSortDir("desc");}
+    };
+
+    const rows = useMemo(() => {
+      let r = PROJECTS.slice();
+      if (search.trim()) {
+        const q = search.toLowerCase();
+        r = r.filter((p) => p.title.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q));
+      }
+      if (playFilter.size) r = r.filter((p) => playFilter.has(p.play));
+      if (horizonFilter.size) r = r.filter((p) => horizonFilter.has(p.horizon));
+      if (coreOnly) r = r.filter((p) => p.core);
+      r.sort((a, b) => {
+        let av = a[sortKey],bv = b[sortKey];
+        if (sortKey === "play") {av = PLAYS.find((x) => x.id === a.play).name;bv = PLAYS.find((x) => x.id === b.play).name;}
+        if (typeof av === "string") return sortDir === "asc" ? av.localeCompare(bv) : bv.localeCompare(av);
+        return sortDir === "asc" ? av - bv : bv - av;
+      });
+      return r;
+    }, [search, playFilter, horizonFilter, coreOnly, sortKey, sortDir]);
+
+    const arrow = (k) => sortKey === k ? <span className="sort-arrow">{sortDir === "asc" ? "↑" : "↓"}</span> : null;
+
+    return (
+      <section id="projects" className="section" data-tone="paper-cool">
+        <div className="section-head">
+          <div>
+            <div className="section-num">03 · PROJECT LIST</div>
+            <h2 className="section-title">All 24 initiatives.</h2>
+            {narrative &&
+            <p className="section-sub">Click any row for the full project card with scoring formula and timeline.</p>
+            }
+          </div>
+          <div className="section-side">
+            showing <b>{rows.length}</b> of {PROJECTS.length}<br />
+            total <b>€{Math.round(rows.reduce((s, p) => s + p.budget * scale, 0))}M</b>
+          </div>
+        </div>
+
+        <div className="tbl-toolbar">
+          <div className="tbl-search">
+            <IconSearch />
+            <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search projects…" />
+          </div>
+          {PLAYS.map((p) =>
+          <button key={p.id} className="tbl-chip"
+          data-on={playFilter.has(p.id)}
+          style={{ "--c": playColor(p.id) }}
+          onClick={() => togglePlay(p.id)}>
+              <span className="swatch" />
+              {p.name.split(" ")[0]}
+            </button>
+          )}
+          {["H1", "H2", "H3"].map((h) =>
+          <button key={h} className="tbl-chip"
+          data-on={horizonFilter.has(h)}
+          style={{ "--c": "var(--fg-2)" }}
+          onClick={() => toggleHorizon(h)}>{h}</button>
+          )}
+          <button className="tbl-chip" data-on={coreOnly} style={{ "--c": "var(--accent)" }}
+          onClick={() => setCoreOnly(!coreOnly)}>CORE ONLY</button>
+          <span className="tbl-chip-spacer" />
+          <span className="tbl-count">{rows.length} ROWS · {sc.label.toUpperCase()}</span>
+        </div>
+
+        <table className="tbl">
+          <thead>
+            <tr>
+              <th onClick={() => handleSort("id")}>#{arrow("id")}</th>
+              <th onClick={() => handleSort("title")}>Project{arrow("title")}</th>
+              <th onClick={() => handleSort("play")}>Play{arrow("play")}</th>
+              <th onClick={() => handleSort("budget")} style={{ textAlign: "right" }}>€M{arrow("budget")}</th>
+              <th onClick={() => handleSort("horizon")}>Horizon{arrow("horizon")}</th>
+              <th onClick={() => handleSort("status")}>Status{arrow("status")}</th>
+              <th>Core</th>
+              <th onClick={() => handleSort("roi")} style={{ textAlign: "right" }}>ROI{arrow("roi")}</th>
+              <th onClick={() => handleSort("score")} style={{ textAlign: "right" }}>Score{arrow("score")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((p) => {
+              const play = PLAYS.find((x) => x.id === p.play);
+              return (
+                <tr key={p.id} onClick={() => onSelect(p.id)}>
+                  <td className="id-cell">{String(p.id).padStart(2, "0")}</td>
+                  <td style={{ maxWidth: 360 }}>{p.title}</td>
+                  <td>
+                    <span className="play-tag" style={{ "--c": playColor(p.play) }}>
+                      <span className="dot" />{play.name.split(" ")[0]}
+                    </span>
+                  </td>
+                  <td className="num-cell">€{Math.round(p.budget * scale)}</td>
+                  <td><span className="horizon-tag">{p.horizon}</span></td>
+                  <td>
+                    <span className="status-tag" style={{ "--c": statusColor(p.status) }}>
+                      <span className="dot" />{p.status}
+                    </span>
+                  </td>
+                  <td><span className={`core-tag ${p.core ? "" : "no"}`}>{p.core ? "CORE" : "—"}</span></td>
+                  <td className="num-cell">{p.roi.toFixed(1)}%</td>
+                  <td className="num-cell">
+                    <span className={`score-pill ${p.score >= 6 ? "hi" : "md"}`}>{p.score.toFixed(2)}</span>
+                  </td>
+                </tr>);
+
+            })}
+            {rows.length === 0 &&
+            <tr><td colSpan="9" style={{ textAlign: "center", padding: 32, color: "var(--fg-3)" }}>No matches. Clear filters to reset.</td></tr>
+            }
+          </tbody>
+        </table>
+      </section>);
+
+  };
+
+  // ===== Project Modal =====
+  window.ProjectModal = function ProjectModal({ projectId, scenario, onClose }) {
+    if (!projectId) return null;
+    const p = PROJECTS.find((x) => x.id === projectId);
+    const play = PLAYS.find((x) => x.id === p.play);
+    const sc = SCENARIOS[scenario];
+    const scale = sc.total / SCENARIOS.plan.total;
+    const years = Array.from({ length: 9 }, (_, i) => 2026 + i);
+    const coreScore = p.core ? 5 : 2;
+
+    return (
+      <div className="modal-veil" onClick={onClose}>
+        <div className="modal" style={{ "--c": playColor(p.play) }} onClick={(e) => e.stopPropagation()}>
+          <div className="modal-head">
+            <div>
+              <div className="modal-eyebrow">#{String(p.id).padStart(2, "0")} · {play.num} {play.name}</div>
+              <h3 className="modal-title">{p.title}</h3>
+            </div>
+            <button className="modal-close" onClick={onClose}><IconClose /></button>
+          </div>
+          <div className="modal-body">
+            <p className="modal-desc">{p.desc}</p>
+
+            <div className="modal-stats">
+              <div className="modal-stat">
+                <div className="modal-stat-key">Budget</div>
+                <div className="modal-stat-val">€{Math.round(p.budget * scale)}M</div>
+              </div>
+              <div className="modal-stat">
+                <div className="modal-stat-key">Projected ROI</div>
+                <div className="modal-stat-val">{p.roi.toFixed(1)}%</div>
+              </div>
+              <div className="modal-stat">
+                <div className="modal-stat-key">Project Score</div>
+                <div className="modal-stat-val">{p.score.toFixed(2)}</div>
+              </div>
+              <div className="modal-stat">
+                <div className="modal-stat-key">Status</div>
+                <div className="modal-stat-val" style={{ fontSize: 14, color: statusColor(p.status) }}>{p.status}</div>
+              </div>
+            </div>
+
+            <div className="modal-time">
+              <div className="modal-time-label">Timeline · {p.start}–{p.end} · {p.dur} {p.dur === 1 ? "year" : "years"} · {p.horizon}</div>
+              <div className="modal-time-bar">
+                {years.map((y) =>
+                <div key={y} className={`modal-time-cell ${y >= p.start && y <= p.end ? "active" : ""}`}>
+                    {y}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="modal-formula">
+              <div style={{ color: "var(--fg-3)", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase" }}>SCORING FORMULA</div>
+              <div className="row"><span>Brand Image · {p.brand}</span><span><b>{p.brandS}</b></span></div>
+              <div className="row"><span>Labour Reqs · {p.labor}</span><span><b>{p.laborS}</b></span></div>
+              <div className="row"><span>Core Area · {p.core ? "Yes" : "No"}</span><span><b>{coreScore}</b></span></div>
+              <div className="row"><span>IMPACT = (Brand + Labor + Core) / 3</span><span className="total"><b>{p.impact.toFixed(2)}</b></span></div>
+              <div className="row" style={{ borderTop: "1px solid var(--line)", paddingTop: 8, marginTop: 4 }}>
+                <span>URGENCY ← {p.horizon}</span><span><b>{p.urgency.toFixed(2)}</b></span>
+              </div>
+              <div className="row total" style={{ borderTop: "1px solid var(--line-2)", paddingTop: 8, marginTop: 4 }}>
+                <span>SCORE = (Impact + Urgency) / 2</span><span>{p.score.toFixed(2)}</span>
+              </div>
+            </div>
+
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <span className="tag">{p.market}</span>
+              <span className="tag">{p.horizon} · {p.start}–{p.end}</span>
+              {p.core && <span className="tag" style={{ color: playColor(p.play), borderColor: playColor(p.play) }}>CORE</span>}
+              {p.priority && <span className="tag">PRIORITY</span>}
+            </div>
+          </div>
+        </div>
+      </div>);
+
+  };
+})();  </script>
+
+  <script type="text/babel">
+// Scenario Stress + Timeline Gantt
+(function () {
+  const { useState, useEffect, useRef } = React;
+  const { PLAYS, PROJECTS, SCENARIOS } = window.PORTFOLIO_DATA;
+
+  // ===== Scenario Stress =====
+  window.ScenarioSection = function ScenarioSection({ scenario, setScenario, customPct, setCustomPct, narrative }) {
+    const useCustom = customPct !== null;
+    const pct = useCustom ? customPct : SCENARIOS[scenario].pct;
+    const revenue = 16800; // €M
+    const total = Math.round((revenue * pct) / 100);
+    const projectBudget = Math.round(total * 0.75);
+    const innovHc = total - projectBudget;
+
+    const planTotal = SCENARIOS.plan.total;
+    const scale = total / planTotal;
+
+    return (
+      <section id="scenario" className="section" data-tone="paper-warm">
+        <div className="section-head">
+          <div>
+            <div className="section-num">04 · SCENARIO STRESS</div>
+            <h2 className="section-title">Stress Test Scenarios</h2>
+            {narrative && (
+              <p className="section-sub">Conservative reverts to multi-brand-retailer benchmarks. Plan defends the 4% boardroom number. Aggressive caps at 5% — only as a temporary catch-up bet.</p>
+            )}
+          </div>
+          <div className="section-side">
+            FY2025 REVENUE<br/>
+            <b>€16.8B</b><br/>
+            75% PROJECT · 25% HC
+          </div>
+        </div>
+
+        <div className="scenario-wrap">
+          <div className="scenario-control">
+            <div className="scenario-segs">
+              {Object.entries(SCENARIOS).map(([k, v]) => (
+                <button key={k}
+                  className="scenario-seg"
+                  data-on={!useCustom && scenario === k}
+                  onClick={() => { setScenario(k); setCustomPct(null); }}>
+                  {v.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="scenario-pct">
+              <div className="scenario-pct-row">
+                <span className="scenario-pct-key">% of FY2025 revenue</span>
+                <span style={{ fontFamily: "Inter", fontSize: 10, color: "var(--fg-3)", letterSpacing: "0.1em" }}>
+                  {useCustom ? "CUSTOM" : SCENARIOS[scenario].label.toUpperCase()}
+                </span>
+              </div>
+              <div className="scenario-pct-val">{pct.toFixed(1)}<small>%</small></div>
+              <div className="scenario-slider-block">
+                <span className="scenario-slider-hint">Drag to stress-test</span>
+                <input type="range" className="scenario-slider"
+                  min="1.5" max="6.5" step="0.1" value={pct}
+                  onChange={e => setCustomPct(parseFloat(e.target.value))} />
+                <div className="scenario-ticks">
+                  {[
+                    { p: 1.5, label: "1.5%", named: false },
+                    { p: 2.5, label: "CONSERVATIVE", named: true, key: "conservative" },
+                    { p: 4.0, label: "PLAN", named: true, key: "plan" },
+                    { p: 5.0, label: "AGGRESSIVE", named: true, key: "aggressive" },
+                    { p: 6.5, label: "6.5%", named: false }
+                  ].map((t) => {
+                    const x = ((t.p - 1.5) / (6.5 - 1.5)) * 100;
+                    const active = Math.abs(pct - t.p) < 0.05;
+                    return (
+                      <span key={t.label}
+                        className={`tick ${t.named ? "named" : ""} ${active ? "active" : ""}`}
+                        style={{ left: `${x}%` }}>
+                        {t.label}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            <div className="scenario-note">
+              {pct < 2.5 && <><b style={{color:"var(--fg)"}}>BELOW CONSERVATIVE.</b> Insufficient to fund regulatory must-dos (CBAM, DPP, EPR). Defensive only — innovation pipeline collapses.</>}
+              {pct >= 2.5 && pct < 3.5 && <><b style={{color:"var(--fg)"}}>CONSERVATIVE TIER.</b> Reverts to multi-brand-retailer benchmark — appropriate after the 2030 transformation phase, not for the build phase.</>}
+              {pct >= 3.5 && pct <= 4.5 && <><b style={{color:"var(--fg)"}}>PLAN TIER.</b> The defended budget. €670M = 4% of FY2025 revenue. Vertically-integrated brand spend tier (Nike/Adidas: 5–7%).</>}
+              {pct > 4.5 && pct <= 5.5 && <><b style={{color:"var(--fg)"}}>AGGRESSIVE TIER.</b> Caps at 5% — defensible only as a temporary catch-up bet, not a steady state.</>}
+              {pct > 5.5 && <><b style={{color:"var(--fg)"}}>ABOVE AGGRESSIVE.</b> Above peer benchmarks. Requires explicit board narrative — overheats run-rate and competes with retail capex.</>}
+            </div>
+          </div>
+
+          <div className="scenario-output">
+            <div>
+              <div className="scenario-output-key">Total Budget</div>
+              <div className="scenario-envelope">
+                <span style={{ color: "var(--fg-3)" }}>€</span>
+                <span className="cur">{total}</span>
+                <span style={{ color: "var(--fg-3)" }}>M</span>
+              </div>
+            </div>
+
+            <div className="scenario-envelope-bd">
+              <div className="scenario-envelope-bd-cell">
+                <div className="scenario-output-key">Project Budget · 75%</div>
+                <div style={{ fontFamily: "Space Grotesk", fontWeight: 700, fontSize: 32, letterSpacing: "-0.025em", marginTop: 4 }}>
+                  €{projectBudget}M
+                </div>
+              </div>
+              <div className="scenario-envelope-bd-cell">
+                <div className="scenario-output-key">Innovation HC · 25%</div>
+                <div style={{ fontFamily: "Space Grotesk", fontWeight: 700, fontSize: 32, letterSpacing: "-0.025em", marginTop: 4 }}>
+                  €{innovHc}M
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div className="scenario-output-key" style={{ marginBottom: 14 }}>Per-Play Allocation</div>
+              <div className="scenario-stack">
+                {PLAYS.map(p => {
+                  const sb = Math.round(p.budget * scale);
+                  return (
+                    <div key={p.id} className="scenario-stack-row" style={{ "--c": playColor(p.id) }}>
+                      <div className="scenario-stack-name">
+                        <span className="dot" />
+                        {p.name}
+                      </div>
+                      <div className="scenario-stack-bar">
+                        <div className="scenario-stack-fill" style={{ width: `${p.pct}%` }} />
+                      </div>
+                      <div className="scenario-stack-val">€{sb}M</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  };
+
+  // ===== Timeline =====
+  window.TimelineSection = function TimelineSection({ scenario, currentYear, setCurrentYear, onSelect, narrative }) {
+    const [playing, setPlaying] = useState(false);
+    const sc = SCENARIOS[scenario];
+    const scale = sc.total / SCENARIOS.plan.total;
+    const years = Array.from({ length: 9 }, (_, i) => 2026 + i);
+
+    useEffect(() => {
+      if (!playing) return;
+      const t = setInterval(() => {
+        setCurrentYear(y => {
+          if (y >= 2034) { setPlaying(false); return 2034; }
+          return y + 1;
+        });
+      }, 800);
+      return () => clearInterval(t);
+    }, [playing, setCurrentYear]);
+
+    // Sort: by start, then play, then budget desc
+    const rows = [...PROJECTS].sort((a,b) => a.start - b.start || a.play.localeCompare(b.play) || b.budget - a.budget);
+
+    const activeCount = PROJECTS.filter(p => p.start <= currentYear && p.end >= currentYear).length;
+    const activeBudget = PROJECTS.filter(p => p.start <= currentYear && p.end >= currentYear)
+      .reduce((s,p) => s + p.budget * scale, 0);
+
+    return (
+      <section id="timeline" className="section" data-tone="paper-cool">
+        <div className="section-head">
+          <div>
+            <div className="section-num">05 · TIMELINE</div>
+            <h2 className="section-title">2026 → 2034.</h2>
+            {narrative && (
+              <p className="section-sub">Press play to scrub the 8-year arc.</p>
+            )}
+          </div>
+          <div className="section-side">
+            <b>{currentYear}</b> · {activeCount} active<br/>
+            <b>€{Math.round(activeBudget)}M</b> in flight
+          </div>
+        </div>
+
+        <div className="timeline-wrap">
+          <div className="timeline-tools">
+            <button className="timeline-play-btn" data-playing={playing}
+              onClick={() => {
+                if (currentYear >= 2034) setCurrentYear(2026);
+                setPlaying(!playing);
+              }}>
+              {playing ? <IconPause /> : <IconPlay />}
+              {playing ? "PAUSE" : "PLAY"}
+            </button>
+            <div className="timeline-year-display">{currentYear}</div>
+            <div className="timeline-year-slider">
+              <input type="range" min="2026" max="2034" step="1" value={currentYear}
+                onChange={e => { setCurrentYear(parseInt(e.target.value)); setPlaying(false); }} />
+            </div>
+            <span className="timeline-tools-meta">{activeCount} OF 24 ACTIVE · {Math.round(activeBudget)}M IN FLIGHT</span>
+          </div>
+
+          <div className="gantt">
+            <div className="gantt-head">
+              <div>PROJECT</div>
+              <div style={{ textAlign:"right" }}>€M</div>
+              {years.map(y => (
+                <div key={y} className={`yr ${y === currentYear ? "cur" : ""}`}>{y}</div>
+              ))}
+            </div>
+            {rows.map(p => (
+              <div key={p.id} className="gantt-row">
+                <div className="lbl" onClick={() => onSelect(p.id)}>
+                  <span className="id">{String(p.id).padStart(2,"0")}</span>
+                  <span className="nm">{p.title}</span>
+                </div>
+                <div className="bd">€{Math.round(p.budget * scale)}M</div>
+                {years.map(y => {
+                  const active = y >= p.start && y <= p.end;
+                  const isStart = y === p.start;
+                  const isEnd = y === p.end;
+                  const past = active && y < currentYear;
+                  const future = y > currentYear;
+                  const cur = y === currentYear;
+                  return (
+                    <div key={y} className={`yr ${cur ? "cur" : ""}`}>
+                      {active && (
+                        <div className={`yr-bar ${isStart ? "start" : ""} ${isEnd ? "end" : ""} ${past ? "dim" : ""} ${future ? "future" : ""}`}
+                          style={{ background: playColor(p.play) }} />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  };
+})();
+  </script>
+
+  <script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+const TWEAK_DEFAULTS = {
+  "scenario": "conservative",
+  "theme": "stadium",
+  "density": "comfortable",
+  "narrative": true
+};
+
+function App() {
+  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const [activeSection, setActiveSection] = useState("cover");
+  const [activePlay, setActivePlay] = useState(null);
+  const [modalProject, setModalProject] = useState(null);
+  const [customPct, setCustomPct] = useState(null);
+  const [currentYear, setCurrentYear] = useState(2026);
+
+  useEffect(() => {
+    document.body.dataset.theme = tweaks.theme;
+    document.body.dataset.density = tweaks.density;
+  }, [tweaks.theme, tweaks.density]);
+
+  const setScenario = (s) => { setTweak("scenario", s); setCustomPct(null); };
+
+  const navigate = useCallback((id) => {
+    setActiveSection(id);
+    const el = document.getElementById(id);
+    if (el) {
+      window.scrollTo({ top: el.offsetTop - 60, behavior: "smooth" });
+    }
+  }, []);
+
+  useEffect(() => {
+    const ids = ["cover", "executive", "plays", "projects", "scenario", "timeline"];
+    const onScroll = () => {
+      const y = window.scrollY + 120;
+      let cur = "cover";
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && el.offsetTop <= y) cur = id;
+      }
+      setActiveSection(cur);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === "Escape") setModalProject(null); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const handleNavPlay = (playId) => {
+    setActivePlay(playId);
+    navigate("plays");
+  };
+
+  return (
+    <div className="app">
+      <Sidebar
+        active={activeSection}
+        scenario={tweaks.scenario}
+        setScenario={setScenario}
+        onNav={navigate} />
+
+      <main className="main">
+        <Topbar scenario={tweaks.scenario} activeSection={activeSection} onNav={navigate} />
+
+        <Cover onNav={navigate} narrative={tweaks.narrative} />
+
+        <ExecutiveView
+          scenario={tweaks.scenario}
+          onSelect={setModalProject}
+          onNavPlay={handleNavPlay}
+          narrative={tweaks.narrative} />
+
+        <PlaysSection
+          scenario={tweaks.scenario}
+          active={activePlay}
+          setActive={setActivePlay}
+          onSelect={setModalProject}
+          narrative={tweaks.narrative} />
+
+        <ProjectList
+          scenario={tweaks.scenario}
+          onSelect={setModalProject}
+          narrative={tweaks.narrative} />
+
+        <ScenarioSection
+          scenario={tweaks.scenario}
+          setScenario={setScenario}
+          customPct={customPct}
+          setCustomPct={setCustomPct}
+          narrative={tweaks.narrative} />
+
+        <TimelineSection
+          scenario={tweaks.scenario}
+          currentYear={currentYear}
+          setCurrentYear={setCurrentYear}
+          onSelect={setModalProject}
+          narrative={tweaks.narrative} />
+
+        <footer className="footer">
+          <div style={{ fontFamily: "Inter" }}>
+            <b>SOURCE</b> · Decathlon FY2024/FY2025 disclosures · BCG Innovation Edge 2024 · IE Workshop II brief · Foundernest 2026 benchmarks · EU Commission DPP regulation 2025-26.
+          </div>
+          <div className="footer-credit" style={{ fontFamily: "Inter" }}>
+            <b style={{ fontFamily: "Inter" }}>EMBA · A1-B · IE BUSINESS SCHOOL · APRIL 2026</b><br />
+            FAIYSAL · KIMIE · PAULINE · SALEM · ISABEL · SULTAN
+          </div>
+        </footer>
+      </main>
+
+      {modalProject &&
+        <ProjectModal
+          projectId={modalProject}
+          scenario={tweaks.scenario}
+          onClose={() => setModalProject(null)} />
+      }
+
+      <TweaksPanel title="Tweaks">
+        <TweakSection label="Scenario">
+          <TweakRadio value={tweaks.scenario} onChange={(v) => setTweak("scenario", v)}
+            options={[
+              { value: "conservative", label: "Conservative" },
+              { value: "plan", label: "Plan" },
+              { value: "aggressive", label: "Aggressive" }
+            ]} />
+        </TweakSection>
+        <TweakSection label="Theme">
+          <TweakRadio value={tweaks.theme} onChange={(v) => setTweak("theme", v)}
+            options={[
+              { value: "stadium", label: "Stadium" },
+              { value: "court", label: "Court" },
+              { value: "paper", label: "Paper" }
+            ]} />
+        </TweakSection>
+        <TweakSection label="Density">
+          <TweakRadio value={tweaks.density} onChange={(v) => setTweak("density", v)}
+            options={[
+              { value: "compact", label: "Compact" },
+              { value: "comfortable", label: "Comfort" },
+              { value: "loose", label: "Loose" }
+            ]} />
+        </TweakSection>
+        <TweakSection label="Narrative">
+          <TweakToggle value={tweaks.narrative} onChange={(v) => setTweak("narrative", v)}
+            label={tweaks.narrative ? "Showing narrative" : "Data only"} />
+        </TweakSection>
+      </TweaksPanel>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
